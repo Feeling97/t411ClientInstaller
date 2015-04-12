@@ -3,7 +3,7 @@
 
 #include <QLayout>
 
-class installprocess : public QLayout
+class installprocess : public QGridLayout
 {
 public:
     installprocess(QString os);

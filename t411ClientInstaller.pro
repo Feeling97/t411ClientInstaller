@@ -13,11 +13,9 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    installprocess.cpp
+        mainwindow.cpp
 
 HEADERS  += mainwindow.h \
-    installprocess.h \
     ui_mainwindow.h
 
 FORMS    += mainwindow.ui
