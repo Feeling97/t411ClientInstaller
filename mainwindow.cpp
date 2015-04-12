@@ -56,8 +56,3 @@ void MainWindow::refreshLayout(QGridLayout newlayout)
 {
     ui->o_content->setLayout(&newlayout);
 }
-
-QString MainWindow::getOS()
-{
-    return os;
-}

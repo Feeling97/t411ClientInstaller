@@ -17,11 +17,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void refreshLayout(QGridLayout newlayout);
-    QString getOS();
 
 private:
     Ui::MainWindow *ui;
     QString os;
+    int etape;
 };
 
 #endif // MAINWINDOW_H
