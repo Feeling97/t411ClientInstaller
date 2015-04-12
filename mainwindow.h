@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QGridLayout>
 #include <QMessageBox>
+#include <QLabel>
 
 namespace Ui {
 class MainWindow;
@@ -16,11 +17,13 @@ class MainWindow : public QDialog
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void refreshLayout(QGridLayout newlayout);
+    void refreshLayout(QGridLayout *newlayout);
+    void nextStage();
+    void determineClient();
 
 private:
     Ui::MainWindow *ui;
-    QString os;
+    QString os, client;
     int etape;
 };
 

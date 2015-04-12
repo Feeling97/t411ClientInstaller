@@ -45,6 +45,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QMessageBox::critical(this, "Erreur", "Votre système d'exploitation n'est pas supporté<br /><a href='http://irc.t411.io/checker/'>Checker en ligne</a>");
     this->close();
     #endif
+
+    etape = 0;
+    determineClient();
+    nextStage();
 }
 
 MainWindow::~MainWindow()
@@ -52,7 +56,22 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::refreshLayout(QGridLayout newlayout)
+void MainWindow::refreshLayout(QGridLayout *newlayout)
 {
-    ui->o_content->setLayout(&newlayout);
+    ui->o_content->setLayout(newlayout);
+}
+
+void MainWindow::nextStage()
+{
+    etape++;
+    QGridLayout *layout = new QGridLayout();
+    if (etape == 1) { // Etape 1: Présentation
+        layout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la meilleure configuration"), 0, 0);
+        refreshLayout(layout);
+    }
+}
+
+void MainWindow::determineClient()
+{
+    client = "Client Torrent"; // A écrire entièrement, ligne de test pour l'instant
 }
