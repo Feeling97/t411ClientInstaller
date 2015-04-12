@@ -45,8 +45,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QMessageBox::critical(this, "Erreur", "Votre système d'exploitation n'est pas supporté<br /><a href='http://irc.t411.io/checker/'>Checker en ligne</a>");
     this->close();
     #endif
-
-    QMessageBox::information(this, "OS", os);
 }
 
 MainWindow::~MainWindow()
