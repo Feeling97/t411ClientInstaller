@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QGridLayout>
 #include <QMessageBox>
+#include "installprocess.h"
 
 namespace Ui {
 class MainWindow;

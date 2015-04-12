@@ -1,8 +1,8 @@
 #include "installprocess.h"
 
-installprocess::installprocess()
+installprocess::installprocess(QString curr_os)
 {
-
+    os = curr_os;
 }
 
 installprocess::~installprocess()

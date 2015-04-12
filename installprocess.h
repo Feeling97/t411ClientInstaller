@@ -6,11 +6,13 @@
 class installprocess : public QLayout
 {
 public:
-    installprocess();
+    installprocess(QString os);
     ~installprocess();
 
 private:
     int etape;
+    QString os;
+    QString client;
 };
 
 #endif // INSTALLPROCESS_H
