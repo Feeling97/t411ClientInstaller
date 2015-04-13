@@ -17,11 +17,10 @@ class MainWindow : public QDialog
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void refreshLayout(QGridLayout *newlayout);
-    void nextStage();
-    void determineClient();
 
 private:
+    void refreshLayout(QGridLayout *newlayout);
+
     Ui::MainWindow *ui;
     QString os, client;
     int etape;

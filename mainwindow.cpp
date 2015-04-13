@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "installer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QDialog(parent),
@@ -47,8 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
     #endif
 
     etape = 0;
-    determineClient();
-    nextStage();
+    client = determineClient(os);
+    refreshLayout(nextStage(client, os, etape));
 }
 
 MainWindow::~MainWindow()
@@ -59,39 +60,4 @@ MainWindow::~MainWindow()
 void MainWindow::refreshLayout(QGridLayout *newlayout)
 {
     ui->o_content->setLayout(newlayout);
-}
-
-void MainWindow::nextStage()
-{
-    etape++;
-    QGridLayout *layout = new QGridLayout();
-    if (etape == 1) { // Etape 1: Présentation
-        layout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée"), 0, 0);
-        refreshLayout(layout);
-    }
-}
-
-void MainWindow::determineClient()
-{
-    if (os == "Windows 8.1")
-        client = "qBittorrent";
-    else if (os == "Windows 8")
-        client = "qBittorrent";
-    else if (os == "Windows 7")
-        client = "µTorrent 2.2.1";
-    else if (os == "Windows Vista")
-        client = "µTorrent 2.2.1";
-    else if (os == "Windows XP x64")
-        client = "µTorrent 2.2.1";
-    else if (os == "Windows XP")
-        client = "µTorrent 2.2.1";
-    else if (os == "Windows 2000")
-        client = "µTorrent 2.2.1";
-    else if (os == "Windows NT")
-        client = "µTorrent 2.2.1";
-    else
-    {
-        QMessageBox::critical(this, "Erreur", "Impossible de déterminer le client correspondant à votre système<br />Vous pouvez utiliser le checker en ligne :<br /><a href='http://irc.t411.io/checker/'>Cliquez ici</a>");
-        this->close();
-    }
 }
