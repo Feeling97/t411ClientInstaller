@@ -74,6 +74,7 @@ public:
 
         retranslateUi(MainWindow);
         QObject::connect(b_quitter, SIGNAL(released()), MainWindow, SLOT(close()));
+        QObject::connect(b_suivant, SIGNAL(released()), MainWindow, SLOT(pressedNext()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi

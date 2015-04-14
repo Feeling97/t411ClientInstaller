@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     etape = 0;
     client = determineClient(os);
-    refreshLayout(nextStage(client, os, etape));
+    ui->o_content->setLayout(nextStage(client, os, etape));
 }
 
 MainWindow::~MainWindow()
@@ -59,5 +59,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::refreshLayout(QGridLayout *newlayout)
 {
+    foreach (QWidget *w, ui->o_content->findChildren<QWidget*>()) delete w;
+    delete ui->o_content->layout();
     ui->o_content->setLayout(newlayout);
+}
+
+void MainWindow::pressedNext()
+{
+    QGridLayout *layout = new QGridLayout();
+    layout->addWidget(new QLabel("Suivant"), 0, 0);
+    refreshLayout(layout);
 }

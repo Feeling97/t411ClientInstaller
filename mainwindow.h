@@ -18,6 +18,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void pressedNext();
+
 private:
     void refreshLayout(QGridLayout *newlayout);
 
