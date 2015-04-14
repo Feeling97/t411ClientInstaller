@@ -20,4 +20,4 @@ HEADERS  += mainwindow.h \
     ui_mainwindow.h \
     installer.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
