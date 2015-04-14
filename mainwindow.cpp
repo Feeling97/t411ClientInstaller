@@ -54,6 +54,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    foreach (QWidget *w, ui->o_content->findChildren<QWidget*>()) delete w;
+    delete ui->o_content->layout();
     delete ui;
 }
 
