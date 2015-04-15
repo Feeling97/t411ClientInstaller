@@ -11,6 +11,7 @@ QGridLayout* nextStage(QString client, QString os, int etape)
 
 QString determineClient(QString os)
 {
+#if defined(Q_OS_WIN) // Windows
     if (os == "Windows 8.1")
         return "qBittorrent";
     else if (os == "Windows 8")
@@ -33,4 +34,7 @@ QString determineClient(QString os)
         // A faire -- Empêcher l'utilisateur d'accéder au programme
         return "";
     }
+#else // Linux et Mac
+    return "Transmission 2.84";
+#endif
 }
