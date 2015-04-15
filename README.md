@@ -4,3 +4,21 @@ Dépôt du projet t411ClientInstaller pendant le développement, à compiler ave
 Bug(s) connu(s):
  - (Windows 10) Détection de Windows 8 à cause d'un problème de compatibilité de Qt
  - (Windows Vista et supérieurs) Ouverture systématique de l'assistant de compatibilité Windows à la fin du programme
+
+## Compilation
+### Pré-requis:
+ - Qt version 4 ou +
+ - MinGW (normalement fourni avec Qt)
+
+### Tutoriel
+Téléchargez les sources et mettez les dans un dossier *src* par exemple <br />
+Ouvrez un terminal (cmd sous Windows) avec l'environnement de développement de Qt:
+ - Windows: Menu Démarrer > Tout les programmes > Qt x.x.x > Qt x.x.x Command Prompt
+ - Linux: ? (si je souviens bien un simple terminal suffit)
+ - Mac: ? (pas de Mac à disposition)
+
+1. Faites `cd` suivi du chemin vers le dossier *src* <br />
+2. Exécutez les commandes dans l'ordre: `qmake -project`, `qmake`, puis `make` <br />
+3. Si `make` ne fonctionne pas sous Windows, utilisez `mingw32-make` <br />
+4. Attendez la fin de la compilation (pour moi ça prend environ 4-5 secondes) <br />
+5. Vous avez votre exécutable!
