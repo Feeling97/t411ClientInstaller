@@ -3,8 +3,9 @@
 QGridLayout* nextStage(QString client, QString os, int etape)
 {
     QGridLayout *layout = new QGridLayout();
+    layout->addWidget(new QLabel("<h1>t411ClientInstaller <small>v0.0.4</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
     if (etape == 0) { // Etape 1: Présentation
-        layout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée"), 0, 0);
+        layout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée"), 1, 0, 0, 0);
     }
     return layout;
 }
