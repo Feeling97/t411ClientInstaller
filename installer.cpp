@@ -31,8 +31,7 @@ QString determineClient(QString os)
     else
     {
         QMessageBox::critical(0, "Erreur", "Impossible de déterminer le client correspondant à votre système<br />Vous pouvez utiliser le checker en ligne :<br /><a href='http://irc.t411.io/checker/'>Cliquez ici</a>");
-        // A faire -- Empêcher l'utilisateur d'accéder au programme
-        return "";
+        exit(1);
     }
 #else // Linux et Mac
     return "Transmission 2.84";
