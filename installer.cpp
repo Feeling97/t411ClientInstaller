@@ -1,15 +1,27 @@
 #include "installer.h"
-#include <QDebug>
 
-QGridLayout* nextStage(QString client, QString os, int *etape)
+QGridLayout* nextStage(MainWindow *parent, QString client, QString os, int *etape)
 {
     *etape = *etape + 1;
     QGridLayout *layout = new QGridLayout();
-    layout->addWidget(new QLabel("<h1>t411ClientInstaller <small>v0.0.4</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
-    qDebug() << *etape;
+    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.0.5</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
     if (*etape == 1) { // Etape 1: Présentation
-        layout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée"), 1, 0, 0, 0);
+        layout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée"), 0, 0, 0, 0);
     }
+    else if (*etape == 2) { // Etape 2: Téléchargement
+        layout->addWidget(new QLabel("Téléchargement (à coder)"), 0, 0, 0, 0);
+    }
+    else if (*etape == 3) { // Etape 3: Installation du client
+        layout->addWidget(new QLabel("Installation du client (à coder)"), 0, 0, 0, 0);
+    }
+    else if (*etape == 4) { // Etape 4: Installation de la config
+        layout->addWidget(new QLabel("Installation de la config (à coder)"), 0, 0, 0, 0);
+    }
+    else if (*etape == 5) { // Etape 5: Fin
+        layout->addWidget(new QLabel("Fin (à coder)"), 0, 0, 0, 0);
+        parent->disableSuivant();
+    }
+
     return layout;
 }
 

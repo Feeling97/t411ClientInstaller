@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     etape = 0;
     client = determineClient(os);
-    ui->o_content->setLayout(nextStage(client, os, &etape));
+    ui->o_content->setLayout(nextStage(this, client, os, &etape));
 }
 
 MainWindow::~MainWindow()
@@ -60,5 +60,10 @@ void MainWindow::refreshLayout(QGridLayout *newlayout)
 
 void MainWindow::pressedNext()
 {
-    refreshLayout(nextStage(client, os, &etape));
+    refreshLayout(nextStage(this, client, os, &etape));
+}
+
+void MainWindow::disableSuivant()
+{
+    ui->b_suivant->setDisabled(true);
 }

@@ -81,7 +81,7 @@ public:
 
     void retranslateUi(QDialog *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "t411ClientInstaller", 0));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "t411 Client Installer", 0));
         b_quitter->setText(QApplication::translate("MainWindow", "Quitter", 0));
         b_suivant->setText(QApplication::translate("MainWindow", "Suivant", 0));
     } // retranslateUi
