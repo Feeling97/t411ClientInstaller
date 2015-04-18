@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     etape = 0;
     client = determineClient(os);
-    ui->o_content->setLayout(nextStage(client, os, etape));
+    ui->o_content->setLayout(nextStage(client, os, &etape));
 }
 
 MainWindow::~MainWindow()
@@ -68,7 +68,5 @@ void MainWindow::refreshLayout(QGridLayout *newlayout)
 
 void MainWindow::pressedNext()
 {
-    QGridLayout *layout = new QGridLayout();
-    layout->addWidget(new QLabel("Suivant"), 0, 0);
-    refreshLayout(layout);
+    refreshLayout(nextStage(client, os, &etape));
 }

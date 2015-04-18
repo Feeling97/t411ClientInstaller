@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QMessageBox>
 
-QGridLayout* nextStage(QString client, QString os, int etape);
+QGridLayout* nextStage(QString client, QString os, int *etape);
 QString determineClient(QString os);
 
 #endif // INSTALLER
