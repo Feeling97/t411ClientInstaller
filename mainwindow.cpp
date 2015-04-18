@@ -60,10 +60,11 @@ void MainWindow::refreshLayout(QGridLayout *newlayout)
 
 void MainWindow::pressedNext()
 {
+    ui->b_suivant->setDisabled(true);
     refreshLayout(nextStage(this, client, os, &etape));
 }
 
-void MainWindow::disableSuivant()
+void MainWindow::enableNext()
 {
-    ui->b_suivant->setDisabled(true);
+    ui->b_suivant->setEnabled(true);
 }
