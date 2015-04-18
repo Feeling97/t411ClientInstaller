@@ -10,33 +10,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Détection approfondie de l'OS
     #if defined(Q_OS_WIN) // Windows
-    if (QSysInfo::windowsVersion() == QSysInfo::WV_NT) {
+    if (QSysInfo::windowsVersion() == QSysInfo::WV_NT)
         os = "Windows NT";
-    }
-    else if (QSysInfo::windowsVersion() == QSysInfo::WV_2000) {
+    else if (QSysInfo::windowsVersion() == QSysInfo::WV_2000)
         os = "Windows 2000";
-    }
-    else if (QSysInfo::windowsVersion() == QSysInfo::WV_XP) {
+    else if (QSysInfo::windowsVersion() == QSysInfo::WV_XP)
         os = "Windows XP";
-    }
-    else if (QSysInfo::windowsVersion() == QSysInfo::WV_2003) {
+    else if (QSysInfo::windowsVersion() == QSysInfo::WV_2003)
         os = "Windows XP x64";
-    }
-    else if (QSysInfo::windowsVersion() == QSysInfo::WV_VISTA) {
+    else if (QSysInfo::windowsVersion() == QSysInfo::WV_VISTA)
         os = "Windows Vista";
-    }
-    else if (QSysInfo::windowsVersion() == QSysInfo::WV_WINDOWS7) {
+    else if (QSysInfo::windowsVersion() == QSysInfo::WV_WINDOWS7)
         os = "Windows 7";
-    }
-    else if (QSysInfo::windowsVersion() == QSysInfo::WV_WINDOWS8) {
+    else if (QSysInfo::windowsVersion() == QSysInfo::WV_WINDOWS8)
         os = "Windows 8";
-    }
-    else if (QSysInfo::windowsVersion() == QSysInfo::WV_WINDOWS8_1) {
+    else if (QSysInfo::windowsVersion() == QSysInfo::WV_WINDOWS8_1)
         os = "Windows 8.1";
-    }
-    else {
+    else
         os = "Windows";
-    }
+
     #elif defined(Q_OS_MAC) // Mac
     os = "Mac OS X";
     #elif defined(Q_OS_LINUX) // Linux
