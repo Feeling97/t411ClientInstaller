@@ -1,10 +1,15 @@
 #include "installer.h"
+#include <QDebug>
 
 QGridLayout* nextStage(MainWindow *parent, QString client, QString os, int *etape)
 {
     *etape = *etape + 1;
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.0.6</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
+    QPixmap logo(":/images/logo.png");
+    QLabel *logolabel = new QLabel;
+    logolabel->setPixmap(logo);
+    layout->addWidget(logolabel, 0, 0, 0, 0, Qt::AlignRight | Qt::AlignTop);
     if (*etape == 1) { // Etape 1: Présentation
         layout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée pour <a href=\"http://www.t411.io/\">t411.io</a><br /><br />\
         Configuration recommandée :\

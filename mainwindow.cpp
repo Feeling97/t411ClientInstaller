@@ -28,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent) :
         os = "Windows 8.1";
     else
         os = "Windows";
-
     #elif defined(Q_OS_MAC) // Mac
     os = "Mac OS X";
     #elif defined(Q_OS_LINUX) // Linux
