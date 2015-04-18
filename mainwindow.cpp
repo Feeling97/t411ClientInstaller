@@ -3,7 +3,7 @@
 #include "installer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
