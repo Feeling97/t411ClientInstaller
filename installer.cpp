@@ -6,7 +6,17 @@ QGridLayout* nextStage(MainWindow *parent, QString client, QString os, int *etap
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.0.5</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
     if (*etape == 1) { // Etape 1: Présentation
-        layout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée"), 0, 0, 0, 0);
+        layout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée pour <a href=\"http://www.t411.io/\">t411.io</a><br /><br />\
+        Configuration recommandée :\
+        <ul>\
+            <li>Port 50500</li>\
+            <li>DHT/Recherche locale de pairs desactivé</li>\
+            <li>Mises à jour automatiques désactivées</li>\
+            <li>Aucune limite d'envoi et de réception</li>\
+            <li>Pré-allocation de l'espace disque pour les nouveaux fichiers</li>\
+            <li>Cryptage des échanges forcé</li>\
+        </ul>\
+        "), 0, 0, 0, 0);
     }
     else if (*etape == 2) { // Etape 2: Téléchargement
         layout->addWidget(new QLabel("Téléchargement (à coder)"), 0, 0, 0, 0);
