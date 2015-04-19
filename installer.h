@@ -47,7 +47,7 @@ private:
     #endif
 
     int etape;
-    QString os, client;
+    QString os, client, filePath;
     MainWindow *parent;
     FileDownloader *fileDownload;
     bool isDownloaded, isInstalled, readyToInstall;

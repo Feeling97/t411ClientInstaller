@@ -62,6 +62,12 @@ QGridLayout* Installer::nextStage(int incetape)
             }
 
             fileDownload = new FileDownloader(fileUrl, this);
+            filePath = qApp->applicationDirPath();
+            #if defined(Q_OS_WIN)
+                filePath += "/setup.exe";
+            #elif defined(Q_OS_MAC)
+                filePath += "/setup.dmg";
+            #endif
             connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
             dbar->setValue(0);
         }
@@ -183,16 +189,10 @@ void Installer::determineClient()
 
 void Installer::saveDownloadedFile()
 {
-    QString fileName;
-    #if defined(Q_OS_WIN)
-        fileName = "setup.exe";
-    #elif defined(Q_OS_MAC)
-        fileName = "setup.dmg";
-    #endif
-    QFile file(qApp->applicationDirPath() + "/" + fileName);
+    QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly))
     {
-        QMessageBox::critical(parent, "Erreur", "Impossible d'écrire dans le fichier " + fileName + "<br />\
+        QMessageBox::critical(parent, "Erreur", "Impossible d'écrire dans le fichier " + filePath + "<br />\
         Erreur : " + file.errorString());
         exit(1);
     }
@@ -227,7 +227,7 @@ void Installer::installuTorrent()
 #if defined(Q_OS_WIN)
 void Installer::killProcessByName(const char *filename)
 {
-    HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, NULL);
+    HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
     PROCESSENTRY32 pEntry;
     pEntry.dwSize = sizeof (pEntry);
     BOOL hRes = Process32First(hSnapShot, &pEntry);
