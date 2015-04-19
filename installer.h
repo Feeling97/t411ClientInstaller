@@ -11,6 +11,16 @@
 #include <QtNetwork>
 #include <QFile>
 #include <QDataStream>
+#include <QProcess>
+
+#if defined(Q_OS_WIN)
+    #include <windows.h>
+    #include <process.h>
+    #include <Tlhelp32.h>
+    #include <winbase.h>
+    #include <string.h>
+#endif
+
 #include "mainwindow.h"
 #include "filedownloader.h"
 
@@ -28,13 +38,19 @@ public:
 
 private slots:
     void saveDownloadedFile();
+    void finishedSetup(int code, QProcess::ExitStatus status);
+    void installuTorrent();
 
 private:
+    #if defined(Q_OS_WIN)
+        void killProcessByName(const char *filename);
+    #endif
+
     int etape;
     QString os, client;
     MainWindow *parent;
     FileDownloader *fileDownload;
-    bool isDownloaded;
+    bool isDownloaded, isInstalled, readyToInstall;
 };
 
 #endif // INSTALLER
