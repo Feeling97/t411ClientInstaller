@@ -3,12 +3,34 @@
 
 #include <QString>
 #include <QGridLayout>
+#include <QVBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
+#include <QProgressBar>
+#include <QSpacerItem>
+#include <QtNetwork>
 #include "mainwindow.h"
 
-QGridLayout* nextStage(MainWindow *parent, QString client, QString os, int *etape);
-QString determineClient(QString os);
+class MainWindow;
+class Installer : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit Installer(MainWindow *argparent = 0, QString argos = "");
+    virtual ~Installer();
+
+    QGridLayout* nextStage();
+    void determineClient();
+
+private slots:
+    void saveDownloadedFile();
+
+private:
+    int etape;
+    QString os, client;
+    MainWindow *parent;
+};
 
 #endif // INSTALLER
 

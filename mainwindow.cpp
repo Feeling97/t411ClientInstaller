@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "installer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint),
@@ -9,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Détection approfondie de l'OS
+    QString os;
     #if defined(Q_OS_WIN) // Windows
     if (QSysInfo::windowsVersion() == QSysInfo::WV_NT)
         os = "Windows NT";
@@ -38,9 +38,10 @@ MainWindow::MainWindow(QWidget *parent) :
     exit(1);
     #endif
 
-    etape = 0;
-    client = determineClient(os);
-    ui->o_content->setLayout(nextStage(this, client, os, &etape));
+    installer = new Installer(this, os);
+
+    installer->determineClient();
+    ui->o_content->setLayout(installer->nextStage());
 }
 
 MainWindow::~MainWindow()
@@ -60,7 +61,7 @@ void MainWindow::refreshLayout(QGridLayout *newlayout)
 void MainWindow::pressedNext()
 {
     ui->b_suivant->setDisabled(true);
-    refreshLayout(nextStage(this, client, os, &etape));
+    refreshLayout(installer->nextStage());
 }
 
 void MainWindow::enableNext()

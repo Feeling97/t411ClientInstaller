@@ -5,11 +5,13 @@
 #include <QGridLayout>
 #include <QMessageBox>
 #include <QLabel>
+#include "installer.h"
 
 namespace Ui {
 class MainWindow;
 }
 
+class Installer;
 class MainWindow : public QDialog
 {
     Q_OBJECT
@@ -26,8 +28,7 @@ private:
     void refreshLayout(QGridLayout *newlayout);
 
     Ui::MainWindow *ui;
-    QString os, client;
-    int etape;
+    Installer *installer;
 };
 
 #endif // MAINWINDOW_H
