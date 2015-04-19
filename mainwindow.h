@@ -20,13 +20,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void refreshLayout(QGridLayout *newlayout);
+
 public slots:
     void pressedNext();
     void enableNext();
 
 private:
-    void refreshLayout(QGridLayout *newlayout);
-
     Ui::MainWindow *ui;
     Installer *installer;
 };

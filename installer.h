@@ -9,7 +9,10 @@
 #include <QProgressBar>
 #include <QSpacerItem>
 #include <QtNetwork>
+#include <QFile>
+#include <QDataStream>
 #include "mainwindow.h"
+#include "filedownloader.h"
 
 class MainWindow;
 class Installer : public QObject
@@ -20,7 +23,7 @@ public:
     explicit Installer(MainWindow *argparent = 0, QString argos = "");
     virtual ~Installer();
 
-    QGridLayout* nextStage();
+    QGridLayout* nextStage(int incetape = 1);
     void determineClient();
 
 private slots:
@@ -30,6 +33,8 @@ private:
     int etape;
     QString os, client;
     MainWindow *parent;
+    FileDownloader *fileDownload;
+    bool isDownloaded;
 };
 
 #endif // INSTALLER
