@@ -19,8 +19,8 @@ Ouvrez un terminal (cmd sous Windows) avec l'environnement de développement de 
 
 1. Faites `cd` suivi du chemin vers le dossier *t411ClientInstaller-master* <br />
 2. Exécutez cette commande : `qmake -project` <br />
-3. Ouvrez le fichier *t411ClientInstaller-master.pro* qui vient d'être créé et ajoutez `network` à la ligne `QT += core gui` pour qu'elle devienne `QT += core gui network`
-!! Si la ligne `QT += ...` n'existe pas créez la directement avec `QT += core gui network` !!
+3. Ouvrez le fichier *t411ClientInstaller-master.pro* qui vient d'être créé et ajoutez `network` à la ligne `QT += core gui` pour qu'elle devienne `QT += core gui network` <br />
+!! Si la ligne `QT += ...` n'existe pas créez la directement avec `QT += core gui network` !! <br />
 4. Exécutez les commandes `qmake` puis `make` <br />
 5. Si `make` ne fonctionne pas sous Windows, utilisez `mingw32-make` <br />
 6. Attendez la fin de la compilation (pour moi ça prend environ 4-5 secondes) <br />
