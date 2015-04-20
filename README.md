@@ -18,7 +18,9 @@ Ouvrez un terminal (cmd sous Windows) avec l'environnement de développement de 
  - Mac: ? (pas de Mac à disposition)
 
 1. Faites `cd` suivi du chemin vers le dossier *src* <br />
-2. Exécutez les commandes dans l'ordre: `qmake -project`, `qmake`, puis `make` <br />
-3. Si `make` ne fonctionne pas sous Windows, utilisez `mingw32-make` <br />
-4. Attendez la fin de la compilation (pour moi ça prend environ 4-5 secondes) <br />
-5. Vous avez votre exécutable!
+2. Exécutez cette commande : `qmake -project`
+3. Ouvrez le fichier t411ClientInstaller-master.pro qui vient d'être créé et ajoutez `network` à la ligne `QT += core gui` pour qu'elle devienne `QT += core gui network`
+4. Exécutez les commandes `qmake` puis `make` <br />
+5. Si `make` ne fonctionne pas sous Windows, utilisez `mingw32-make` <br />
+6. Attendez la fin de la compilation (pour moi ça prend environ 4-5 secondes) <br />
+7. Vous avez votre exécutable!
