@@ -1,4 +1,5 @@
 #include "installer.h"
+#include <QDebug>
 
 Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent) {
     parent = argparent;
@@ -16,7 +17,7 @@ QGridLayout* Installer::nextStage(int incetape)
 {
     etape = etape + incetape;
     QGridLayout *layout = new QGridLayout();
-    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.1</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
+    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.1.2</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
     QPixmap logo(":/images/logo.png");
     QLabel *logolabel = new QLabel;
     logolabel->setPixmap(logo);
@@ -102,8 +103,9 @@ QGridLayout* Installer::nextStage(int incetape)
             {
                 if (readyToInstall)
                 {
-                    QString target = getenv("ProgramFiles(x86)");
-                    if (target.isEmpty()) { target = getenv("ProgramFiles"); }
+                    QString target = QProcessEnvironment::systemEnvironment().value("ProgramFiles");
+
+                    qDebug() << target;
 
                     if (target.isEmpty())
                     {
@@ -153,7 +155,7 @@ QGridLayout* Installer::nextStage(int incetape)
 
         if (client == "qBittorrent")
         {
-            QString target = getenv("AppData");
+            QString target = QProcessEnvironment::systemEnvironment().value("AppData");
 
             if (target.isEmpty())
             {
@@ -190,7 +192,7 @@ QGridLayout* Installer::nextStage(int incetape)
         }
         else if (client == "µTorrent 2.2.1")
         {
-            QString target = getenv("AppData");
+            QString target = QProcessEnvironment::systemEnvironment().value("AppData");
 
             if (target.isNull())
             {
@@ -284,10 +286,10 @@ void Installer::determineClient()
 
 void Installer::saveDownloadedFile()
 {
-    QFile file(filePath);
+    QFile file(filePath.toUtf8());
     if (!file.open(QIODevice::WriteOnly))
     {
-        QMessageBox::critical(parent, "Erreur", "Impossible d'écrire dans le fichier " + filePath + "<br />\
+        QMessageBox::critical(parent, "Erreur", "Impossible d'écrire dans le fichier <br />" + filePath + "<br />\
         Erreur : " + file.errorString());
         exit(1);
     }
