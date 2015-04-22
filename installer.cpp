@@ -341,7 +341,7 @@ void Installer::copy(QString argsource, QString argtarget)
         }
         else
         {
-            QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argtarget + " ?");
+            QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à <br />" + argtarget + " ?");
             exit(1);
         }
     }
@@ -361,7 +361,7 @@ void Installer::rename(QString argsource, QString argtarget)
         }
         else
         {
-            QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argtarget + " ?");
+            QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à <br />" + argtarget + " ?");
             exit(1);
         }
     }
@@ -377,7 +377,7 @@ void Installer::remove(QString argfile)
         }
         else
         {
-            QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argfile + " ?");
+            QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à <br />" + argfile + " ?");
             exit(1);
         }
     }
