@@ -95,7 +95,9 @@ QGridLayout* Installer::nextStage(int incetape)
             {
                 killProcessByName("qBittorrent.exe");
                 QProcess *setup = new QProcess(this);
-                setup->start(qApp->applicationDirPath() + "/setup.exe");
+                QStringList args;
+                args << "/S";
+                setup->start(qApp->applicationDirPath() + "/setup.exe", args);
                 connect(setup, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finishedSetup(int, QProcess::ExitStatus)));
                 dbar->setValue(0);
             }
@@ -286,7 +288,7 @@ void Installer::determineClient()
 
 void Installer::saveDownloadedFile()
 {
-    QFile file(filePath.toUtf8());
+    QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly))
     {
         QMessageBox::critical(parent, "Erreur", "Impossible d'écrire dans le fichier <br />" + filePath + "<br />\
