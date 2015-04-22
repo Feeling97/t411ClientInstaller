@@ -333,6 +333,8 @@ void Installer::installConfig()
 
 void Installer::copy(QString argsource, QString argtarget)
 {
+    argsource = QDir::toNativeSeparators(argsource);
+    argtarget = QDir::toNativeSeparators(argtarget);
     if (QFile::exists(argsource))
     {
         if (QFile::copy(argsource, argtarget))
@@ -349,6 +351,8 @@ void Installer::copy(QString argsource, QString argtarget)
 
 void Installer::rename(QString argsource, QString argtarget)
 {
+    argsource = QDir::toNativeSeparators(argsource);
+    argtarget = QDir::toNativeSeparators(argtarget);
     if (QFile::exists(argsource))
     {
         if (QFile::rename(argsource, argtarget))
@@ -369,6 +373,7 @@ void Installer::rename(QString argsource, QString argtarget)
 
 void Installer::remove(QString argfile)
 {
+    argfile = QDir::toNativeSeparators(argfile);
     if (QFile::exists(argfile))
     {
         if (QFile::remove(argfile))
