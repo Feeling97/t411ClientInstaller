@@ -350,6 +350,10 @@ void Installer::rename(QString argsource, QString argtarget)
     {
         return;
     }
+    else if (QFile::remove(argtarget) && QFile::rename(argsource, argtarget))
+    {
+        return;
+    }
     else
     {
         QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argtarget + " ?");
