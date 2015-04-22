@@ -7,6 +7,7 @@ Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent) 
     isDownloaded = false;
     isInstalled = false;
     readyToInstall = false;
+    readyToConfig = false;
 }
 
 Installer::~Installer() {}
@@ -51,7 +52,7 @@ QGridLayout* Installer::nextStage(int incetape)
                 fileUrl.setUrl("http://irc.t411.io/logiciels/Transmission-2.84.dmg");
             else if (os == "Linux")
             {
-                QMessageBox::critical(parent, "Erreur", "Le téléchargement et l'installation de " + client + " pour " + os + " n'est pas pris en charge<br />\
+                QMessageBox::critical(parent, "Erreur", "Le téléchargement et l'installation de " + client + " pour " + os + " n'est pas encore pris en charge<br />\
                 Vous pouvez aller sur le site officiel de " + client + " en cliquant <a href=\"http://www.transmissionbt.com/\">ici</a>");
                 exit(1);
             }
@@ -73,6 +74,7 @@ QGridLayout* Installer::nextStage(int incetape)
         }
         else
         {
+            isDownloaded = false;
             centerlayout->addWidget(new QLabel("Téléchargement de " + client + "... Terminé !"));
             dbar->setValue(100);
             parent->enableNext();
@@ -84,11 +86,13 @@ QGridLayout* Installer::nextStage(int incetape)
     else if (etape == 3) { // Etape 3: Installation du client
         QVBoxLayout *centerlayout = new QVBoxLayout();
         QProgressBar *dbar = new QProgressBar();
+
         if (!isInstalled)
         {
             centerlayout->addWidget(new QLabel("Installation de " + client + "..."));
             if (client == "qBittorrent")
             {
+                killProcessByName("qBittorrent.exe");
                 QProcess *setup = new QProcess(this);
                 setup->start(qApp->applicationDirPath() + "/setup.exe");
                 connect(setup, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finishedSetup(int, QProcess::ExitStatus)));
@@ -98,7 +102,9 @@ QGridLayout* Installer::nextStage(int incetape)
             {
                 if (readyToInstall)
                 {
-                    QString target = getenv("ProgramFiles");
+                    QString target = getenv("ProgramFiles(x86)");
+                    if (target.isEmpty()) { target = getenv("ProgramFiles"); }
+
                     if (target.isEmpty())
                     {
                         QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Impossible d'accéder à la variable d'environnement %ProgramFiles%");
@@ -107,16 +113,10 @@ QGridLayout* Installer::nextStage(int incetape)
 
                     if (!QDir(target + "/uTorrent").exists()) { QDir().mkdir(target + "/uTorrent"); }
                     if (QFile(target + "/uTorrent/uTorrent.exe").exists()) { QFile::remove(target + "/uTorrent/uTorrent.exe"); }
-                    if (QFile::copy(qApp->applicationDirPath() + "/setup.exe", target + "/uTorrent/uTorrent.exe"))
-                    {
-                        isInstalled = true;
-                        parent->refreshLayout(nextStage(0));
-                    }
-                    else
-                    {
-                        QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + target + " ?");
-                        exit(1);
-                    }
+
+                    copy(qApp->applicationDirPath() + "/setup.exe", target + "/uTorrent/uTorrent.exe");
+                    QTimer::singleShot(500, this, SLOT(finishedSetup()));
+                    dbar->setValue(50);
                 }
                 else
                 {
@@ -148,11 +148,106 @@ QGridLayout* Installer::nextStage(int incetape)
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignCenter);
     }
     else if (etape == 4) { // Etape 4: Installation de la config
-        layout->addWidget(new QLabel("Installation de la config (à coder)"), 0, 0, 0, 0);
-        parent->enableNext();
+        QVBoxLayout *centerlayout = new QVBoxLayout();
+        QProgressBar *dbar = new QProgressBar();
+
+        if (client == "qBittorrent")
+        {
+            QString target = getenv("AppData");
+
+            if (target.isEmpty())
+            {
+                QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Impossible d'accéder à la variable d'environnement %AppData%");
+                exit(1);
+            }
+
+            target += "/qBittorrent";
+
+            if (!readyToConfig)
+            {
+                killProcessByName("qBittorrent.exe");
+                QTimer::singleShot(2000, this, SLOT(installConfig()));
+                centerlayout->addWidget(new QLabel("Installation de la configuration recommandée pour " + client + "..."));
+                dbar->setValue(33);
+            }
+            else if (!isDownloaded)
+            {
+                rename(target + "/qBittorrent.ini", target + "/qBittorrent.bak.ini");
+                QUrl fileUrl;
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/qBittorrent.ini");
+                fileDownload = new FileDownloader(fileUrl, this);
+                filePath = target + "/qBittorrent.ini";
+                connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
+                centerlayout->addWidget(new QLabel("Installation de la configuration recommandée pour " + client + "..."));
+                dbar->setValue(66);
+            }
+            else
+            {
+                centerlayout->addWidget(new QLabel("Installation de la configuration recommandée pour " + client + "... Terminé !"));
+                dbar->setValue(100);
+                parent->enableNext();
+            }
+        }
+        else if (client == "µTorrent 2.2.1")
+        {
+            QString target = getenv("AppData");
+
+            if (target.isNull())
+            {
+                QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Impossible d'accéder à la variable d'environnement %AppData%");
+                exit(1);
+            }
+
+            target += "/uTorrent";
+
+            if (!readyToConfig)
+            {
+                copy(target + "/resume.dat", target + "/resume.bak.dat");
+                killProcessByName("uTorrent.exe");
+                QTimer::singleShot(2000, this, SLOT(installConfig()));
+                centerlayout->addWidget(new QLabel("Installation de la configuration recommandée pour " + client + "..."));
+                dbar->setValue(33);
+            }
+            else if (!isDownloaded)
+            {
+                remove(target + "/resume.dat");
+                rename(target + "/resume.bak.dat", target + "/resume.dat");
+                rename(target + "/settings.dat", target + "/settings.bak.dat");
+                rename(target + "/settings.dat.old", target + "/settings.bak.dat.old");
+                QUrl fileUrl;
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/uTorrent.dat");
+                fileDownload = new FileDownloader(fileUrl, this);
+                filePath = target + "/settings.dat";
+                connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
+                centerlayout->addWidget(new QLabel("Installation de la configuration recommandée pour " + client + "..."));
+                dbar->setValue(66);
+            }
+            else
+            {
+                centerlayout->addWidget(new QLabel("Installation de la configuration recommandée pour " + client + "... Terminé !"));
+                dbar->setValue(100);
+                parent->enableNext();
+            }
+        }
+        else if (client == "Transmission 2.84" && os == "Mac")
+        {
+            QMessageBox::critical(parent, "Erreur", "Le téléchargement et l'installation de la configuration de " + client + " pour " + os + " n'est pas encore pris en charge<br />\
+            Vous pouvez aller sur le tuto de configuration de " + client + " en cliquant <a href=\"http://irc.t411.io/pics/tuto-tr-mac.png/\">ici</a>");
+            exit(1);
+            dbar->setValue(0);
+        }
+        else
+        {
+            QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Contactez Feeling97 en indiquant votre OS et le client que le programme vous conseille");
+            exit(1);
+        }
+
+        centerlayout->addWidget(dbar);
+        layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignCenter);
     }
     else if (etape == 5) { // Etape 5: Fin
-        layout->addWidget(new QLabel("Fin (à coder)"), 0, 0, 0, 0);
+        layout->addWidget(new QLabel(client + " pour " + os + " est maintenant installé avec sa configuration recommandée"), 0, 0, 0, 0);
+        parent->disableNext();
     }
 
     return layout;
@@ -202,6 +297,12 @@ void Installer::saveDownloadedFile()
     parent->refreshLayout(nextStage(0));
 }
 
+void Installer::finishedSetup()
+{
+    isInstalled = true;
+    parent->refreshLayout(nextStage(0));
+}
+
 void Installer::finishedSetup(int code, QProcess::ExitStatus status)
 {
     (void)code; // Ne fait rien, enlève juste le warning de variable inutilisée
@@ -221,7 +322,52 @@ void Installer::finishedSetup(int code, QProcess::ExitStatus status)
 void Installer::installuTorrent()
 {
     readyToInstall = true;
-    nextStage(0);
+    parent->refreshLayout(nextStage(0));
+}
+
+void Installer::installConfig()
+{
+    readyToConfig = true;
+    parent->refreshLayout(nextStage(0));
+}
+
+void Installer::copy(QString argsource, QString argtarget)
+{
+    if (QFile::copy(argsource, argtarget))
+    {
+        return;
+    }
+    else
+    {
+        QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argtarget + " ?");
+        exit(1);
+    }
+}
+
+void Installer::rename(QString argsource, QString argtarget)
+{
+    if (QFile::rename(argsource, argtarget))
+    {
+        return;
+    }
+    else
+    {
+        QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argtarget + " ?");
+        exit(1);
+    }
+}
+
+void Installer::remove(QString argfile)
+{
+    if (QFile::remove(argfile))
+    {
+        return;
+    }
+    else
+    {
+        QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argfile + " ?");
+        exit(1);
+    }
 }
 
 #if defined(Q_OS_WIN)

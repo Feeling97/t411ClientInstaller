@@ -38,10 +38,15 @@ public:
 
 private slots:
     void saveDownloadedFile();
+    void finishedSetup();
     void finishedSetup(int code, QProcess::ExitStatus status);
     void installuTorrent();
+    void installConfig();
 
 private:
+    void copy(QString argsource, QString argtarget);
+    void rename(QString argsource, QString argtarget);
+    void remove(QString argfile);
     #if defined(Q_OS_WIN)
         void killProcessByName(const char *filename);
     #endif
@@ -50,7 +55,7 @@ private:
     QString os, client, filePath;
     MainWindow *parent;
     FileDownloader *fileDownload;
-    bool isDownloaded, isInstalled, readyToInstall;
+    bool isDownloaded, isInstalled, readyToInstall, readyToConfig;
 };
 
 #endif // INSTALLER

@@ -68,3 +68,8 @@ void MainWindow::enableNext()
 {
     ui->b_suivant->setEnabled(true);
 }
+
+void MainWindow::disableNext()
+{
+    ui->b_suivant->hide();
+}

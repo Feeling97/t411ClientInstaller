@@ -21,10 +21,11 @@ public:
     ~MainWindow();
 
     void refreshLayout(QGridLayout *newlayout);
+    void enableNext();
+    void disableNext();
 
 public slots:
     void pressedNext();
-    void enableNext();
 
 private:
     Ui::MainWindow *ui;
