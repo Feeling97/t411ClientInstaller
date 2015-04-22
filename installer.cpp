@@ -333,44 +333,53 @@ void Installer::installConfig()
 
 void Installer::copy(QString argsource, QString argtarget)
 {
-    if (QFile::copy(argsource, argtarget))
+    if (QFile::exists(argsource))
     {
-        return;
-    }
-    else
-    {
-        QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argtarget + " ?");
-        exit(1);
+        if (QFile::copy(argsource, argtarget))
+        {
+            return;
+        }
+        else
+        {
+            QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argtarget + " ?");
+            exit(1);
+        }
     }
 }
 
 void Installer::rename(QString argsource, QString argtarget)
 {
-    if (QFile::rename(argsource, argtarget))
+    if (QFile::exists(argsource))
     {
-        return;
-    }
-    else if (QFile::remove(argtarget) && QFile::rename(argsource, argtarget))
-    {
-        return;
-    }
-    else
-    {
-        QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argtarget + " ?");
-        exit(1);
+        if (QFile::rename(argsource, argtarget))
+        {
+            return;
+        }
+        else if (QFile::remove(argtarget) && QFile::rename(argsource, argtarget))
+        {
+            return;
+        }
+        else
+        {
+            QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argtarget + " ?");
+            exit(1);
+        }
     }
 }
 
 void Installer::remove(QString argfile)
 {
-    if (QFile::remove(argfile))
+    if (QFile::exists(argfile))
     {
-        return;
-    }
-    else
-    {
-        QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argfile + " ?");
-        exit(1);
+        if (QFile::remove(argfile))
+        {
+            return;
+        }
+        else
+        {
+            QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à " + argfile + " ?");
+            exit(1);
+        }
     }
 }
 
