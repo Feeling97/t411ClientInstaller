@@ -1,5 +1,4 @@
 #include "installer.h"
-#include <QDebug>
 
 Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent) {
     parent = argparent;
@@ -106,8 +105,6 @@ QGridLayout* Installer::nextStage(int incetape)
                 if (readyToInstall)
                 {
                     QString target = QProcessEnvironment::systemEnvironment().value("ProgramFiles");
-
-                    qDebug() << target;
 
                     if (target.isEmpty())
                     {
