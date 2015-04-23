@@ -22,7 +22,7 @@ public:
 
     void refreshLayout(QGridLayout *newlayout);
     void enableNext();
-    void disableNext();
+    void enableFinish();
 
 public slots:
     void pressedNext();

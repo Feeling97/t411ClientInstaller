@@ -92,7 +92,9 @@ QGridLayout* Installer::nextStage(int incetape)
             centerlayout->addWidget(new QLabel("Installation de " + client + "..."));
             if (client == "qBittorrent")
             {
-                killProcessByName("qBittorrent.exe");
+                #if defined(Q_OS_WIN)
+                    killProcessByName("qBittorrent.exe");
+                #endif
                 QProcess *setup = new QProcess(this);
                 QStringList args;
                 args << "/S";
@@ -122,7 +124,9 @@ QGridLayout* Installer::nextStage(int incetape)
                 }
                 else
                 {
-                    killProcessByName("uTorrent.exe");
+                    #if defined(Q_OS_WIN)
+                        killProcessByName("uTorrent.exe");
+                    #endif
                     QTimer::singleShot(2000, this, SLOT(installuTorrent()));
                     dbar->setValue(0);
                 }
@@ -167,7 +171,9 @@ QGridLayout* Installer::nextStage(int incetape)
 
             if (!readyToConfig)
             {
-                killProcessByName("qBittorrent.exe");
+                #if defined(Q_OS_WIN)
+                    killProcessByName("qBittorrent.exe");
+                #endif
                 QTimer::singleShot(2000, this, SLOT(installConfig()));
                 centerlayout->addWidget(new QLabel("Installation de la configuration recommandée pour " + client + "..."));
                 dbar->setValue(33);
@@ -205,7 +211,9 @@ QGridLayout* Installer::nextStage(int incetape)
             if (!readyToConfig)
             {
                 copy(target + "/resume.dat", target + "/resume.bak.dat");
-                killProcessByName("uTorrent.exe");
+                #if defined(Q_OS_WIN)
+                    killProcessByName("uTorrent.exe");
+                #endif
                 QTimer::singleShot(2000, this, SLOT(installConfig()));
                 centerlayout->addWidget(new QLabel("Installation de la configuration recommandée pour " + client + "..."));
                 dbar->setValue(33);
@@ -248,8 +256,12 @@ QGridLayout* Installer::nextStage(int incetape)
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignCenter);
     }
     else if (etape == 5) { // Etape 5: Fin
-        layout->addWidget(new QLabel(client + " pour " + os + " est maintenant installé avec sa configuration recommandée"), 0, 0, 0, 0);
-        parent->disableNext();
+        QVBoxLayout *centerlayout = new QVBoxLayout();
+        launchClient = new QCheckBox("Lancer " + client + " à la fermeture", parent);
+        centerlayout->addWidget(new QLabel(client + " pour " + os + " est maintenant installé avec sa configuration recommandée"));
+        centerlayout->addWidget(launchClient);
+        layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
+        parent->enableFinish();
     }
 
     return layout;
@@ -282,6 +294,7 @@ void Installer::determineClient()
     #else // Linux et Mac
         client = "Transmission 2.84";
     #endif
+        client = "qBittorrent";
 }
 
 void Installer::saveDownloadedFile()
@@ -331,6 +344,16 @@ void Installer::installConfig()
 {
     readyToConfig = true;
     parent->refreshLayout(nextStage(0));
+}
+
+void Installer::pressedFinish()
+{
+    if (launchClient->isChecked())
+    {
+        QProcess *clientProcess = new QProcess();
+        clientProcess->startDetached(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/" + client + "/" + client + ".exe"), QStringList());
+    }
+    parent->close();
 }
 
 void Installer::copy(QString argsource, QString argtarget)

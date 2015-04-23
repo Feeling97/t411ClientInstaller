@@ -12,6 +12,7 @@
 #include <QFile>
 #include <QDataStream>
 #include <QProcess>
+#include <QCheckBox>
 
 #if defined(Q_OS_WIN)
     #include <windows.h>
@@ -42,6 +43,7 @@ private slots:
     void finishedSetup(int code, QProcess::ExitStatus status);
     void installuTorrent();
     void installConfig();
+    void pressedFinish();
 
 private:
     void copy(QString argsource, QString argtarget);
@@ -55,6 +57,7 @@ private:
     QString os, client, filePath;
     MainWindow *parent;
     FileDownloader *fileDownload;
+    QCheckBox* launchClient;
     bool isDownloaded, isInstalled, readyToInstall, readyToConfig;
 };
 

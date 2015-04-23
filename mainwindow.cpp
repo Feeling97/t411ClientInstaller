@@ -69,7 +69,10 @@ void MainWindow::enableNext()
     ui->b_suivant->setEnabled(true);
 }
 
-void MainWindow::disableNext()
+void MainWindow::enableFinish()
 {
-    ui->b_suivant->hide();
+    ui->b_suivant->setText("Terminer");
+    ui->b_suivant->setEnabled(true);
+    ui->b_suivant->disconnect();
+    connect(ui->b_suivant, SIGNAL(released()), installer, SLOT(pressedFinish()));
 }
