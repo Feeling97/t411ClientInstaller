@@ -26,6 +26,7 @@ public:
 
 public slots:
     void pressedNext();
+    void pressedQuit();
 
 private:
     Ui::MainWindow *ui;

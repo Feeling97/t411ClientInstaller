@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     #else // Autres systèmes
     os = "Inconnu";
     QMessageBox::critical(this, "Erreur", "Votre système d'exploitation n'est pas supporté<br /><a href='http://irc.t411.io/checker/'>Checker en ligne</a>");
-    exit(1);
+    qApp->quit();
     #endif
 
     installer = new Installer(this, os);
@@ -56,6 +56,19 @@ void MainWindow::refreshLayout(QGridLayout *newlayout)
     foreach (QWidget *w, ui->o_content->findChildren<QWidget*>()) delete w;
     delete ui->o_content->layout();
     ui->o_content->setLayout(newlayout);
+}
+
+void MainWindow::pressedQuit()
+{
+    QMessageBox wannaQuit(QMessageBox::Question, "Quitter", "Voulez-vous vraiment quitter et annuler l'installation ?", QMessageBox::Yes | QMessageBox::No);
+    wannaQuit.setButtonText(QMessageBox::Yes, "Oui");
+    wannaQuit.setButtonText(QMessageBox::No, "Non");
+    wannaQuit.setDefaultButton(QMessageBox::No);
+
+    if (wannaQuit.exec() == QMessageBox::Yes)
+    {
+        qApp->quit();
+    }
 }
 
 void MainWindow::pressedNext()

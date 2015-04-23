@@ -33,9 +33,14 @@ class Installer : public QObject
 public:
     explicit Installer(MainWindow *argparent = 0, QString argos = "");
     virtual ~Installer();
-
     QGridLayout* nextStage(int incetape = 1);
     void determineClient();
+
+public slots:
+    void doNextStage(int incetape = 1);
+
+signals:
+    void finishedStage();
 
 private slots:
     void saveDownloadedFile();
@@ -58,7 +63,7 @@ private:
     MainWindow *parent;
     FileDownloader *fileDownload;
     QCheckBox* launchClient;
-    bool isDownloaded, isInstalled, readyToInstall, readyToConfig;
+    bool isDownloaded, isInstalled, readyToInstall, readyToConfig, finished;
 };
 
 #endif // INSTALLER
