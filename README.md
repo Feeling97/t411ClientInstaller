@@ -4,6 +4,7 @@ Dépôt du projet t411ClientInstaller pendant le développement, à compiler ave
 ### Bug(s) connu(s):
  - (Windows 10) Détection de Windows 8 à cause d'un problème de compatibilité de Qt
  - (Windows Vista et supérieurs) Ouverture systématique de l'assistant de compatibilité Windows à la fin du programme
+ - (Linux) Problème de taille de fenêtre avec certaines polices de caractères
 
 ## Compilation
 ### Pré-requis:
@@ -22,6 +23,6 @@ Ouvrez un terminal (cmd sous Windows) avec l'environnement de développement de 
 3. Ouvrez le fichier *t411ClientInstaller-master.pro* qui vient d'être créé et ajoutez `network` à la ligne `QT += core gui` pour qu'elle devienne `QT += core gui network` <br />
 !! Si la ligne `QT += ...` n'existe pas créez la directement avec `QT += core gui network` !! <br />
 4. Exécutez les commandes `qmake` puis `make` <br />
-5. Si `make` ne fonctionne pas sous Windows, utilisez `mingw32-make` <br />
-6. Attendez la fin de la compilation (pour moi ça prend environ 4-5 secondes) <br />
-7. Vous avez votre exécutable!
+!! Si `make` ne fonctionne pas sous Windows, utilisez `mingw32-make` !! <br />
+5. Attendez la fin de la compilation (pour moi ça prend environ 4-5 secondes) <br />
+6. Vous avez votre exécutable!
