@@ -16,7 +16,7 @@ QGridLayout* Installer::nextStage(int incetape)
 {
     etape = etape + incetape;
     QGridLayout *layout = new QGridLayout();
-    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.1.2</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
+    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.2</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
     QPixmap logo(":/images/logo.png");
     QLabel *logolabel = new QLabel;
     logolabel->setPixmap(logo);
@@ -323,6 +323,7 @@ void Installer::finishedSetup(int code, QProcess::ExitStatus status)
     (void)code; // Ne fait rien, enlève juste le warning de variable inutilisée
     if (status == QProcess::NormalExit)
     {
+        QFile::link(QDir::toNativeSeparators(target + "/" + client + "/" + client + ".exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/" + client + ".lnk"));
         isInstalled = true;
         parent->refreshLayout(nextStage(0));
     }
