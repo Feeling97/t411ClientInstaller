@@ -118,6 +118,7 @@ QGridLayout* Installer::nextStage(int incetape)
                     }
 
                     if (!QDir(target + "/uTorrent").exists()) { QDir().mkdir(target + "/uTorrent"); }
+                    if (!QDir(QProcessEnvironment::systemEnvironment().value("AppData") + "/uTorrent").exists()) { QDir().mkdir(QProcessEnvironment::systemEnvironment().value("AppData") + "/uTorrent"); }
                     if (QFile(target + "/uTorrent/uTorrent.exe").exists()) { QFile::remove(target + "/uTorrent/uTorrent.exe"); }
 
                     copy(qApp->applicationDirPath() + "/setup.exe", target + "/uTorrent/uTorrent.exe");
