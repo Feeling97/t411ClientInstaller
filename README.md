@@ -3,7 +3,6 @@ Dépôt du projet t411ClientInstaller pendant le développement, à compiler ave
 
 ### Bug(s) connu(s):
  - (Windows 10) Détection de Windows 8 à cause d'un problème de compatibilité de Qt
- - (Windows Vista et supérieurs) Ouverture systématique de l'assistant de compatibilité Windows à la fin du programme
  - (Linux) Problème de taille de fenêtre avec certaines polices de caractères
 
 ## Compilation
