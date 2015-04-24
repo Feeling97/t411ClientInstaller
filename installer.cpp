@@ -256,6 +256,8 @@ QGridLayout* Installer::nextStage(int incetape)
         QVBoxLayout *centerlayout = new QVBoxLayout();
         launchClient = new QCheckBox("Lancer " + client + " à la fermeture", parent);
         createLink = new QCheckBox("Créer un raccourci pour " + client + " sur le bureau", parent);
+        launchClient->setChecked(true);
+        createLink->setChecked(true);
         centerlayout->addWidget(new QLabel(client + " pour " + os + " est maintenant installé avec sa configuration recommandée"));
         centerlayout->addWidget(launchClient);
         centerlayout->addWidget(createLink);
