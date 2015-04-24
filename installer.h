@@ -62,7 +62,7 @@ private:
     QString os, client, filePath;
     MainWindow *parent;
     FileDownloader *fileDownload;
-    QCheckBox* launchClient;
+    QCheckBox *launchClient, *createLink;
     bool isDownloaded, isInstalled, readyToInstall, readyToConfig, finished;
 };
 

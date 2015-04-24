@@ -122,7 +122,6 @@ QGridLayout* Installer::nextStage(int incetape)
                     if (QFile(target + "/uTorrent/uTorrent.exe").exists()) { QFile::remove(target + "/uTorrent/uTorrent.exe"); }
 
                     copy(qApp->applicationDirPath() + "/setup.exe", target + "/uTorrent/uTorrent.exe");
-                    QFile::link(QDir::toNativeSeparators(target + "/uTorrent/uTorrent.exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/µTorrent.lnk"));
                     QTimer::singleShot(50, this, SLOT(finishedSetup()));
                     dbar->setValue(33);
                 }
@@ -256,8 +255,10 @@ QGridLayout* Installer::nextStage(int incetape)
     else if (etape == 5) { // Etape 5: Fin
         QVBoxLayout *centerlayout = new QVBoxLayout();
         launchClient = new QCheckBox("Lancer " + client + " à la fermeture", parent);
+        createLink = new QCheckBox("Créer un raccourci pour " + client + " sur le bureau", parent);
         centerlayout->addWidget(new QLabel(client + " pour " + os + " est maintenant installé avec sa configuration recommandée"));
         centerlayout->addWidget(launchClient);
+        centerlayout->addWidget(createLink);
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
         parent->enableFinish();
     }
@@ -331,7 +332,6 @@ void Installer::finishedSetup(int code, QProcess::ExitStatus status)
     (void)code; // Ne fait rien, enlève juste le warning de variable inutilisée
     if (status == QProcess::NormalExit)
     {
-        QFile::link(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/" + client + "/" + client + ".exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/" + client + ".lnk"));
         isInstalled = true;
         doNextStage(0);
     }
@@ -369,6 +369,15 @@ void Installer::pressedFinish()
 
         clientProcess->startDetached(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/" + path + "/" + path + ".exe"), QStringList());
     }
+
+    if (createLink->isChecked())
+    {
+        if (client == "µTorrent 2.2.1")
+            QFile::link(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/uTorrent/uTorrent.exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/µTorrent.lnk"));
+        else if (client == "qBittorrent")
+            QFile::link(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/" + client + "/" + client + ".exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/" + client + ".lnk"));
+    }
+
     qApp->quit();
 }
 
