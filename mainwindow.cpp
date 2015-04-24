@@ -60,7 +60,7 @@ void MainWindow::refreshLayout(QGridLayout *newlayout)
 
 void MainWindow::pressedQuit()
 {
-    QMessageBox wannaQuit(QMessageBox::Question, "Quitter", "Voulez-vous vraiment quitter et annuler l'installation ?", QMessageBox::Yes | QMessageBox::No);
+    QMessageBox wannaQuit(QMessageBox::Question, "Quitter", "Voulez-vous vraiment quitter l'installation ?<br />Les changements déjà effectués ne seront pas annulés", QMessageBox::Yes | QMessageBox::No);
     wannaQuit.setButtonText(QMessageBox::Yes, "Oui");
     wannaQuit.setButtonText(QMessageBox::No, "Non");
     wannaQuit.setDefaultButton(QMessageBox::No);
