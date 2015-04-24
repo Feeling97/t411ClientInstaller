@@ -18,7 +18,7 @@ QGridLayout* Installer::nextStage(int incetape)
 {
     etape = etape + incetape;
     QGridLayout *layout = new QGridLayout();
-    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.2</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
+    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.2.1</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
     QPixmap logo(":/images/logo.png");
     QLabel *logolabel = new QLabel;
     logolabel->setPixmap(logo);
@@ -230,7 +230,6 @@ QGridLayout* Installer::nextStage(int incetape)
                 fileDownload = new FileDownloader(fileUrl, this);
                 filePath = target + "/settings.dat";
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
-                centerlayout->addWidget(new QLabel("Installation de la configuration recommandée pour " + client + "..."));
                 dbar->setValue(66);
             }
             else
@@ -361,7 +360,14 @@ void Installer::pressedFinish()
     if (launchClient->isChecked())
     {
         QProcess *clientProcess = new QProcess();
-        clientProcess->startDetached(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/" + client + "/" + client + ".exe"), QStringList());
+
+        QString path;
+        if (client == "µTorrent 2.2.1")
+        {
+            path = "uTorrent";
+        }
+
+        clientProcess->startDetached(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/" + path + "/" + path + ".exe"), QStringList());
     }
     qApp->quit();
 }
