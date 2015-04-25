@@ -1,10 +1,6 @@
 # t411ClientInstaller
 Dépôt du projet t411ClientInstaller pendant le développement, à compiler avec la version statique de Qt 4.8.6 et ses toolchains recommandées pour MinGW
 
-### Bug(s) connu(s):
- - (Windows 10) Détection de Windows 8 à cause d'un problème de compatibilité de Qt
- - (Linux) Problème de taille de fenêtre avec certaines polices de caractères
-
 ## Compilation
 ### Pré-requis:
  - Qt version 4 ou +
