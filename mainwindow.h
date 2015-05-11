@@ -20,11 +20,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void refreshLayout(QGridLayout *newlayout);
     void enableNext();
     void enableFinish();
 
 public slots:
+    void refreshLayout(QGridLayout *newlayout);
     void pressedNext();
     void pressedQuit();
 

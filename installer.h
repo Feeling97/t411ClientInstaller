@@ -13,13 +13,13 @@
 #include <QDataStream>
 #include <QProcess>
 #include <QCheckBox>
+#include <QGroupBox>
+#include <QPushButton>
+#include <QRadioButton>
 
 #if defined(Q_OS_WIN)
     #include <windows.h>
-    #include <process.h>
     #include <Tlhelp32.h>
-    #include <winbase.h>
-    #include <string.h>
 #endif
 
 #include "mainwindow.h"
@@ -40,15 +40,19 @@ public slots:
     void doNextStage(int incetape = 1);
 
 signals:
+    void refreshLayout(QGridLayout*);
     void finishedStage();
 
 private slots:
+    void doRefreshLayout(QGridLayout *newlayout);
     void saveDownloadedFile();
     void finishedSetup();
     void finishedSetup(int code, QProcess::ExitStatus status);
     void installuTorrent();
     void installConfig();
     void pressedFinish();
+    void goToChoice();
+    void clientChanged();
 
 private:
     void copy(QString argsource, QString argtarget);
@@ -63,6 +67,10 @@ private:
     MainWindow *parent;
     FileDownloader *fileDownload;
     QCheckBox *launchClient, *createLink;
+    QGroupBox *chosedClient;
+    #if defined(Q_OS_WIN)
+        QRadioButton *utorrentButton, *qbittorrentButton;
+    #endif
     bool isDownloaded, isInstalled, readyToInstall, readyToConfig, finished;
 };
 

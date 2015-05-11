@@ -18,14 +18,29 @@ QGridLayout* Installer::nextStage(int incetape)
 {
     etape = etape + incetape;
     QGridLayout *layout = new QGridLayout();
-    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.2.2</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
+    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.3</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
     QPixmap logo(":/images/logo.png");
     QLabel *logolabel = new QLabel;
     logolabel->setPixmap(logo);
     layout->addWidget(logolabel, 0, 0, 0, 0, Qt::AlignRight | Qt::AlignTop);
 
-    if (etape == 1) { // Etape 1: Présentation
-        layout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée pour <a href=\"http://www.t411.io/\">t411.io</a><br /><br />\
+    if (etape == 0) // Choix du client
+    {
+        QVBoxLayout *centerlayout = new QVBoxLayout();
+        chosedClient = new QGroupBox("Choisissez le client que vous voulez installer :", parent);
+        utorrentButton = new QRadioButton("µTorrent 2.2.1", chosedClient);
+        utorrentButton->setChecked(true);
+        qbittorrentButton = new QRadioButton("qBittorrent", chosedClient);
+        centerlayout->addWidget(utorrentButton, Qt::AlignVCenter);
+        centerlayout->addWidget(qbittorrentButton, Qt::AlignVCenter);
+        chosedClient->setLayout(centerlayout);
+        layout->addWidget(chosedClient, 0, 0, 0, 0, Qt::AlignVCenter);
+        connect(utorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
+        connect(qbittorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
+    }
+    else if (etape == 1) { // Etape 1: Présentation
+        QVBoxLayout *centerlayout = new QVBoxLayout();
+        centerlayout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée pour <a href=\"http://www.t411.io/\">t411.io</a><br /><br />\
         Configuration recommandée :\
         <ul>\
             <li>Port 50500</li>\
@@ -34,8 +49,15 @@ QGridLayout* Installer::nextStage(int incetape)
             <li>Aucune limite d'envoi et de réception</li>\
             <li>Pré-allocation de l'espace disque pour les nouveaux fichiers</li>\
             <li>Cryptage des échanges forcé</li>\
-        </ul>\
-        "), 0, 0, 0, 0);
+        </ul>"));
+        centerlayout->setContentsMargins(0, 100, 0, 0);
+        centerlayout->addStretch();
+        #if defined(Q_OS_WIN)
+        QPushButton *goToChoice = new QPushButton("Autres clients");
+        centerlayout->addWidget(goToChoice, Qt::AlignCenter);
+        connect(goToChoice, SIGNAL(released()), this, SLOT(goToChoice()));
+        #endif
+        layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
         parent->enableNext();
     }
     else if (etape == 2) { // Etape 2: Téléchargement
@@ -303,9 +325,32 @@ void Installer::determineClient()
     #endif
 }
 
+void Installer::doRefreshLayout(QGridLayout *newlayout)
+{
+    emit refreshLayout(newlayout);
+}
+
 void Installer::doNextStage(int incetape)
 {
-    parent->refreshLayout(nextStage(incetape));
+    doRefreshLayout(nextStage(incetape));
+}
+
+void Installer::goToChoice()
+{
+    doNextStage(-1);
+}
+
+void Installer::clientChanged()
+{
+    if (utorrentButton->isChecked())
+        client = "µTorrent 2.2.1";
+    else if (qbittorrentButton->isChecked())
+        client = "qBittorrent";
+    else
+    {
+        QMessageBox::critical(parent, "Erreur", "Imposible de mémoriser le client à installer");
+        qApp->quit();
+    }
 }
 
 void Installer::saveDownloadedFile()

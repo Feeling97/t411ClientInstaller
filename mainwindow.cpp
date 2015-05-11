@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint),
@@ -40,20 +41,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     installer = new Installer(this, os);
 
+    connect(installer, SIGNAL(refreshLayout(QGridLayout*)), this, SLOT(refreshLayout(QGridLayout*)));
+
     installer->determineClient();
-    ui->o_content->setLayout(installer->nextStage());
+    installer->doNextStage();
 }
 
 MainWindow::~MainWindow()
 {
-    foreach (QWidget *w, ui->o_content->findChildren<QWidget*>()) delete w;
+    foreach (QWidget *w, ui->o_content->findChildren<QWidget*>())
+        w->deleteLater();
     delete ui->o_content->layout();
     delete ui;
+    delete installer;
 }
 
 void MainWindow::refreshLayout(QGridLayout *newlayout)
 {
-    foreach (QWidget *w, ui->o_content->findChildren<QWidget*>()) delete w;
+    foreach (QWidget *w, ui->o_content->findChildren<QWidget*>())
+        w->deleteLater();
     delete ui->o_content->layout();
     ui->o_content->setLayout(newlayout);
 }
@@ -66,15 +72,13 @@ void MainWindow::pressedQuit()
     wannaQuit.setDefaultButton(QMessageBox::No);
 
     if (wannaQuit.exec() == QMessageBox::Yes)
-    {
         qApp->quit();
-    }
 }
 
 void MainWindow::pressedNext()
 {
     ui->b_suivant->setDisabled(true);
-    refreshLayout(installer->nextStage());
+    installer->doNextStage();
 }
 
 void MainWindow::enableNext()
