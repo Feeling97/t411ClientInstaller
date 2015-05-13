@@ -18,7 +18,7 @@ QGridLayout* Installer::nextStage(int incetape)
 {
     etape = etape + incetape;
     QGridLayout *layout = new QGridLayout();
-    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.3</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
+    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.3.1</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
     QPixmap logo(":/images/logo.png");
     QLabel *logolabel = new QLabel;
     logolabel->setPixmap(logo);
