@@ -29,8 +29,11 @@ QGridLayout* Installer::nextStage(int incetape)
         QVBoxLayout *centerlayout = new QVBoxLayout();
         chosedClient = new QGroupBox("Choisissez le client que vous voulez installer :", parent);
         utorrentButton = new QRadioButton("µTorrent 2.2.1", chosedClient);
-        utorrentButton->setChecked(true);
         qbittorrentButton = new QRadioButton("qBittorrent", chosedClient);
+        if (client == "µTorrent 2.2.1")
+            utorrentButton->setChecked(true);
+        else if (client == "qBittorrent")
+            qbittorrentButton->setChecked(true);
         centerlayout->addWidget(utorrentButton, Qt::AlignVCenter);
         centerlayout->addWidget(qbittorrentButton, Qt::AlignVCenter);
         chosedClient->setLayout(centerlayout);
