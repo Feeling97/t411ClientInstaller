@@ -197,11 +197,30 @@ QGridLayout* Installer::nextStage(int incetape)
 
             if (!readyToConfig)
             {
-                #if defined(Q_OS_WIN)
-                    killProcessByName("qBittorrent.exe");
-                #endif
-                QTimer::singleShot(2000, this, SLOT(installConfig()));
-                dbar->setValue(66);
+                bool replaceConfig = true;
+                if (QFile::exists(target + "/qBittorrent.ini"))
+                {
+                    QMessageBox wannaReplace(QMessageBox::Question, "Quitter", "Une configuration existe déjà pour " + client + " pour " + os + "<br />Voulez-vous la remplacer ?<br />Il est conseillé de la remplacer sauf si vous savez ce que vous faites", QMessageBox::Yes | QMessageBox::No);
+                    wannaReplace.setButtonText(QMessageBox::Yes, "Oui");
+                    wannaReplace.setButtonText(QMessageBox::No, "Non");
+                    wannaReplace.setDefaultButton(QMessageBox::Yes);
+
+                    if (wannaReplace.exec() == QMessageBox::No)
+                    {
+                        replaceConfig = false;
+                        dbar->setValue(100);
+                        finished = true;
+                    }
+                }
+
+                if (replaceConfig)
+                {
+                    #if defined(Q_OS_WIN)
+                        killProcessByName("qBittorrent.exe");
+                    #endif
+                    QTimer::singleShot(2000, this, SLOT(installConfig()));
+                    dbar->setValue(66);
+                }
             }
             else if (!isDownloaded)
             {
@@ -233,12 +252,32 @@ QGridLayout* Installer::nextStage(int incetape)
 
             if (!readyToConfig)
             {
-                copy(target + "/resume.dat", target + "/resume.bak.dat");
-                #if defined(Q_OS_WIN)
-                    killProcessByName("uTorrent.exe");
-                #endif
-                QTimer::singleShot(2000, this, SLOT(installConfig()));
-                dbar->setValue(66);
+                bool replaceConfig = true;
+
+                if (QFile::exists(target + "/settings.dat"))
+                {
+                    QMessageBox wannaReplace(QMessageBox::Question, "Quitter", "Une configuration existe déjà pour " + client + " pour " + os + "<br />Voulez-vous la remplacer ?<br />Il est conseillé de la remplacer sauf si vous savez ce que vous faites", QMessageBox::Yes | QMessageBox::No);
+                    wannaReplace.setButtonText(QMessageBox::Yes, "Oui");
+                    wannaReplace.setButtonText(QMessageBox::No, "Non");
+                    wannaReplace.setDefaultButton(QMessageBox::Yes);
+
+                    if (wannaReplace.exec() == QMessageBox::No)
+                    {
+                        replaceConfig = false;
+                        dbar->setValue(100);
+                        finished = true;
+                    }
+                }
+
+                if (replaceConfig)
+                {
+                    copy(target + "/resume.dat", target + "/resume.bak.dat");
+                    #if defined(Q_OS_WIN)
+                        killProcessByName("uTorrent.exe");
+                    #endif
+                    QTimer::singleShot(2000, this, SLOT(installConfig()));
+                    dbar->setValue(66);
+                }
             }
             else if (!isDownloaded)
             {
