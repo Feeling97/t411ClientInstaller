@@ -206,7 +206,7 @@ QGridLayout* Installer::nextStage(int incetape)
                 bool replaceConfig = true;
                 if (QFile::exists(target + "/qBittorrent.ini"))
                 {
-                    QMessageBox wannaReplace(QMessageBox::Question, "Quitter", "Une configuration existe déjà pour " + client + " pour " + os + "<br />Voulez-vous la remplacer ?<br />Il est conseillé de la remplacer sauf si vous savez ce que vous faites", QMessageBox::Yes | QMessageBox::No);
+                    QMessageBox wannaReplace(QMessageBox::Question, "Remplacer", "Une configuration existe déjà pour " + client + " pour " + os + "<br />Voulez-vous la remplacer ?<br />Il est conseillé de la remplacer sauf si vous savez ce que vous faites", QMessageBox::Yes | QMessageBox::No);
                     wannaReplace.setButtonText(QMessageBox::Yes, "Oui");
                     wannaReplace.setButtonText(QMessageBox::No, "Non");
                     wannaReplace.setDefaultButton(QMessageBox::Yes);
@@ -262,7 +262,7 @@ QGridLayout* Installer::nextStage(int incetape)
 
                 if (QFile::exists(target + "/settings.dat"))
                 {
-                    QMessageBox wannaReplace(QMessageBox::Question, "Quitter", "Une configuration existe déjà pour " + client + " pour " + os + "<br />Voulez-vous la remplacer ?<br />Il est conseillé de la remplacer sauf si vous savez ce que vous faites", QMessageBox::Yes | QMessageBox::No);
+                    QMessageBox wannaReplace(QMessageBox::Question, "Remplacer", "Une configuration existe déjà pour " + client + " pour " + os + "<br />Voulez-vous la remplacer ?<br />Il est conseillé de la remplacer sauf si vous savez ce que vous faites", QMessageBox::Yes | QMessageBox::No);
                     wannaReplace.setButtonText(QMessageBox::Yes, "Oui");
                     wannaReplace.setButtonText(QMessageBox::No, "Non");
                     wannaReplace.setDefaultButton(QMessageBox::Yes);
