@@ -18,11 +18,14 @@ QGridLayout* Installer::nextStage(int incetape)
 {
     etape = etape + incetape;
     QGridLayout *layout = new QGridLayout();
-    layout->addWidget(new QLabel("<h1>t411 Client Installer <small>v0.3.1</small></h1>"), 0, 0, 0, 0, Qt::AlignTop);
     QPixmap logo(":/images/logo.png");
     QLabel *logolabel = new QLabel;
     logolabel->setPixmap(logo);
-    layout->addWidget(logolabel, 0, 0, 0, 0, Qt::AlignRight | Qt::AlignTop);
+    layout->addWidget(logolabel, 0, 0, 0, 0, Qt::AlignTop);
+    QPixmap t411(":/images/t411.png");
+    QLabel *t411label = new QLabel;
+    t411label->setPixmap(t411);
+    layout->addWidget(t411label, 0, 0, 0, 0, Qt::AlignRight | Qt::AlignTop);
 
     if (etape == 0) // Choix du client
     {
