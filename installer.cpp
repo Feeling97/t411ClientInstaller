@@ -231,6 +231,8 @@ QGridLayout* Installer::nextStage(int incetape)
             }
             else if (!isDownloaded)
             {
+                if (!QDir(target).exists())
+                    QDir().mkdir(target);
                 rename(target + "/qBittorrent.ini", target + "/qBittorrent.bak.ini");
                 QUrl fileUrl;
                 fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/qBittorrent.ini");
