@@ -177,6 +177,7 @@ QGridLayout* Installer::nextStage(int incetape)
         }
         else
         {
+            remove(qApp->applicationDirPath() + "setup.exe");
             dbar->setValue(66);
             finished = true;
         }
