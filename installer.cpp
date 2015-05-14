@@ -177,7 +177,6 @@ QGridLayout* Installer::nextStage(int incetape)
         }
         else
         {
-            remove(qApp->applicationDirPath() + "setup.exe");
             dbar->setValue(66);
             finished = true;
         }
@@ -332,6 +331,7 @@ QGridLayout* Installer::nextStage(int incetape)
         centerlayout->addWidget(launchClient);
         centerlayout->addWidget(createLink);
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
+        this->remove(qApp->applicationDirPath() + "/setup.exe");
         parent->enableFinish();
     }
 
