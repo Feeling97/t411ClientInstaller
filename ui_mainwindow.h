@@ -1,25 +1,7 @@
-/********************************************************************************
-** Form generated from reading UI file 'mainwindow.ui'
-**
-** Created by: Qt User Interface Compiler version 5.4.1
-**
-** WARNING! All changes made in this file will be lost when recompiling UI file!
-********************************************************************************/
-
 #ifndef UI_MAINWINDOW_H
 #define UI_MAINWINDOW_H
 
-#include <QtCore/QVariant>
-#include <QAction>
 #include <QApplication>
-#include <QButtonGroup>
-#include <QDialog>
-#include <QFrame>
-#include <QGridLayout>
-#include <QHeaderView>
-#include <QPushButton>
-#include <QWidget>
-#include <QString>
 
 QT_BEGIN_NAMESPACE
 
