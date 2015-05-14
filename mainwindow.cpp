@@ -65,7 +65,7 @@ void MainWindow::refreshLayout(QGridLayout *newlayout)
 
 void MainWindow::pressedQuit()
 {
-    QMessageBox wannaQuit(QMessageBox::Question, "Quitter", "Voulez-vous vraiment quitter l'installation ?<br />Les changements déjà effectués ne seront pas annulés", QMessageBox::Yes | QMessageBox::No);
+    QMessageBox wannaQuit(QMessageBox::Question, "Quitter", "Voulez-vous vraiment quitter l'installation ?", QMessageBox::Yes | QMessageBox::No);
     wannaQuit.setButtonText(QMessageBox::Yes, "Oui");
     wannaQuit.setButtonText(QMessageBox::No, "Non");
     wannaQuit.setDefaultButton(QMessageBox::No);
@@ -85,9 +85,13 @@ void MainWindow::enableNext()
     ui->b_suivant->setEnabled(true);
 }
 
-void MainWindow::enableFinish()
+void MainWindow::disableQuit()
 {
     ui->b_quitter->setDisabled(true);
+}
+
+void MainWindow::enableFinish()
+{
     ui->b_suivant->setText("Terminer");
     ui->b_suivant->setEnabled(true);
     ui->b_suivant->disconnect();

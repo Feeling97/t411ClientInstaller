@@ -341,6 +341,9 @@ QGridLayout* Installer::nextStage(int incetape)
         emit finishedStage();
     }
 
+    if (etape > 1)
+        parent->disableQuit();
+
     return layout;
 }
 

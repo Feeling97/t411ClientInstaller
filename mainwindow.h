@@ -21,6 +21,7 @@ public:
     ~MainWindow();
 
     void enableNext();
+    void disableQuit();
     void enableFinish();
 
 public slots:
