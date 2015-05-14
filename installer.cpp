@@ -456,7 +456,7 @@ void Installer::pressedFinish()
     {
         QProcess *clientProcess = new QProcess();
 
-        QString path;
+        QString path = client;
         if (client == "µTorrent 2.2.1")
         {
             path = "uTorrent";
