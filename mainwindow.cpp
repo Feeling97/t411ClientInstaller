@@ -87,6 +87,7 @@ void MainWindow::enableNext()
 
 void MainWindow::enableFinish()
 {
+    ui->b_quitter->setDisabled(true);
     ui->b_suivant->setText("Terminer");
     ui->b_suivant->setEnabled(true);
     ui->b_suivant->disconnect();
