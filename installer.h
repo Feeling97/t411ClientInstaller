@@ -23,9 +23,9 @@
 #endif
 
 #include "mainwindow.h"
-#include "filedownloader.h"
 
 class MainWindow;
+class FileDownloader;
 class Installer : public QObject
 {
     Q_OBJECT
@@ -73,6 +73,8 @@ private:
     #endif
     bool isDownloaded, isInstalled, readyToInstall, readyToConfig, finished;
 };
+
+#include "filedownloader.h"
 
 #endif // INSTALLER
 

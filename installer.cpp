@@ -1,6 +1,7 @@
 #include "installer.h"
 
-Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent) {
+Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent)
+{
     parent = argparent;
     os = argos;
     etape = 0;

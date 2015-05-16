@@ -5,12 +5,13 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include "installer.h"
 
 class FileDownloader : public QObject
 {
  Q_OBJECT
  public:
-  explicit FileDownloader(QUrl imageUrl, QObject *parent = 0);
+  explicit FileDownloader(QUrl imageUrl, Installer *parent = 0);
   virtual ~FileDownloader();
   QByteArray downloadedData() const;
 
