@@ -47,7 +47,7 @@ QGridLayout* Installer::nextStage(int incetape)
     }
     else if (etape == 1) { // Etape 1: Présentation
         QVBoxLayout *centerlayout = new QVBoxLayout();
-        centerlayout->addWidget(new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée pour <a href=\"http://www.t411.io/\">t411.io</a><br /><br />\
+        QLabel *text = new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée pour <a href=\"http://www.t411.io/\">t411.io</a><br /><br />\
         Configuration recommandée :\
         <ul>\
             <li>Port 50500</li>\
@@ -56,7 +56,11 @@ QGridLayout* Installer::nextStage(int incetape)
             <li>Aucune limite d'envoi et de réception</li>\
             <li>Pré-allocation de l'espace disque pour les nouveaux fichiers</li>\
             <li>Cryptage des échanges forcé</li>\
-        </ul>"));
+        </ul>");
+        text->setTextFormat(Qt::RichText);
+        text->setTextInteractionFlags(Qt::TextBrowserInteraction);
+        text->setOpenExternalLinks(true);
+        centerlayout->addWidget(text);
         centerlayout->setContentsMargins(0, 100, 0, 0);
         centerlayout->addStretch();
         #if defined(Q_OS_WIN)
