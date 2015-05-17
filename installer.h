@@ -23,9 +23,11 @@
 #endif
 
 #include "mainwindow.h"
+#include "aboutlabel.h"
 
 class MainWindow;
 class FileDownloader;
+class AboutLabel;
 class Installer : public QObject
 {
     Q_OBJECT
@@ -68,6 +70,8 @@ private:
     FileDownloader *fileDownload;
     QCheckBox *launchClient, *createLink;
     QGroupBox *chosedClient;
+    QLabel *t411label;
+    AboutLabel *logolabel;
     #if defined(Q_OS_WIN)
         QRadioButton *utorrentButton, *qbittorrentButton;
     #endif

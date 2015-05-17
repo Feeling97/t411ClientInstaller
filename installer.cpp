@@ -11,6 +11,12 @@ Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent)
     readyToConfig = false;
     finished = false;
     connect(this, SIGNAL(finishedStage()), this, SLOT(doNextStage()), Qt::QueuedConnection);
+
+    QPixmap t411(":/images/t411.png");
+    t411label = new QLabel;
+    t411label->setPixmap(t411);
+
+    logolabel = new AboutLabel;
 }
 
 Installer::~Installer() {}
@@ -19,13 +25,7 @@ QGridLayout* Installer::nextStage(int incetape)
 {
     etape = etape + incetape;
     QGridLayout *layout = new QGridLayout();
-    QPixmap logo(":/images/logo.png");
-    QLabel *logolabel = new QLabel;
-    logolabel->setPixmap(logo);
     layout->addWidget(logolabel, 0, 0, 0, 0, Qt::AlignTop);
-    QPixmap t411(":/images/t411.png");
-    QLabel *t411label = new QLabel;
-    t411label->setPixmap(t411);
     layout->addWidget(t411label, 0, 0, 0, 0, Qt::AlignRight | Qt::AlignTop);
 
     if (etape == 0) // Choix du client
@@ -47,16 +47,16 @@ QGridLayout* Installer::nextStage(int incetape)
     }
     else if (etape == 1) { // Etape 1: Présentation
         QVBoxLayout *centerlayout = new QVBoxLayout();
-        QLabel *text = new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée pour <a href=\"http://www.t411.io/\">t411.io</a><br /><br />\
-        Configuration recommandée :\
-        <ul>\
-            <li>Port 50500</li>\
-            <li>DHT/Recherche locale de pairs desactivé</li>\
-            <li>Mises à jour automatiques désactivées</li>\
-            <li>Aucune limite d'envoi et de réception</li>\
-            <li>Pré-allocation de l'espace disque pour les nouveaux fichiers</li>\
-            <li>Cryptage des échanges forcé</li>\
-        </ul>");
+        QLabel *text = new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée pour <a href=\"http://www.t411.io/\">t411.io</a><br /><br />"
+        "Configuration recommandée :"
+        "<ul>"
+            "<li>Port 50500</li>"
+            "<li>DHT/Recherche locale de pairs desactivé</li>"
+            "<li>Mises à jour automatiques désactivées</li>"
+            "<li>Aucune limite d'envoi et de réception</li>"
+            "<li>Pré-allocation de l'espace disque pour les nouveaux fichiers</li>"
+            "<li>Cryptage des échanges forcé</li>"
+        "</ul>");
         text->setTextFormat(Qt::RichText);
         text->setTextInteractionFlags(Qt::TextBrowserInteraction);
         text->setOpenExternalLinks(true);
@@ -554,8 +554,7 @@ void Installer::killProcessByName(const char *filename)
         std::wcstombs(mbstr, pEntry.szExeFile, 128);
         if (strcmp(mbstr, filename) == 0)
         {
-            HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
-                                          (DWORD) pEntry.th32ProcessID);
+            HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0, (DWORD) pEntry.th32ProcessID);
             if (hProcess != NULL)
             {
                 TerminateProcess(hProcess, 9);
