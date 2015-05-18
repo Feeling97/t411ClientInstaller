@@ -3,6 +3,7 @@
 AboutLabel::AboutLabel()
 {
     QPixmap logo(":/images/logo.png");
+    this->setObjectName("aboutlabel");
     this->setPixmap(logo);
 }
 

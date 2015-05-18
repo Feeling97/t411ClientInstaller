@@ -14,6 +14,7 @@ Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent)
 
     QPixmap t411(":/images/t411.png");
     t411label = new QLabel;
+    t411label->setObjectName("t411label");
     t411label->setPixmap(t411);
 
     logolabel = new AboutLabel;

@@ -30,6 +30,9 @@ public slots:
     void pressedQuit();
 
 private:
+    void clear();
+
+private:
     Ui::MainWindow *ui;
     Installer *installer;
 };

@@ -48,18 +48,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    foreach (QWidget *w, ui->o_content->findChildren<QWidget*>())
-        w->deleteLater();
-    delete ui->o_content->layout();
+    clear();
     delete ui;
     delete installer;
 }
 
 void MainWindow::refreshLayout(QGridLayout *newlayout)
 {
-    foreach (QWidget *w, ui->o_content->findChildren<QWidget*>())
-        w->deleteLater();
-    delete ui->o_content->layout();
+    clear();
     ui->o_content->setLayout(newlayout);
 }
 
@@ -96,4 +92,12 @@ void MainWindow::enableFinish()
     ui->b_suivant->setEnabled(true);
     ui->b_suivant->disconnect();
     connect(ui->b_suivant, SIGNAL(released()), installer, SLOT(pressedFinish()));
+}
+
+void MainWindow::clear()
+{
+    foreach (QWidget *w, ui->o_content->findChildren<QWidget*>())
+        if (w->objectName() != "t411label" && w->objectName() != "aboutlabel")
+            w->deleteLater();
+    delete ui->o_content->layout();
 }
