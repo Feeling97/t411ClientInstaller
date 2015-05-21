@@ -1,3 +1,18 @@
+/*  This file is part of t411 Client Installer.
+
+    t411 Client Installer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    t411 Client Installer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with t411 Client Installer.  If not, see <http://www.gnu.org/licenses/>. */
+
 #include "installer.h"
 
 Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent)
@@ -187,12 +202,7 @@ QGridLayout* Installer::nextStage(int incetape)
                 bool replaceConfig = true;
                 if (QFile::exists(target + "/qBittorrent.ini"))
                 {
-                    QMessageBox wannaReplace(QMessageBox::Question, "Remplacer", "Une configuration existe déjà pour " + client + " pour " + os + "<br />Voulez-vous la remplacer ?<br />Il est conseillé de la remplacer sauf si vous savez ce que vous faites", QMessageBox::Yes | QMessageBox::No);
-                    wannaReplace.setButtonText(QMessageBox::Yes, "Oui");
-                    wannaReplace.setButtonText(QMessageBox::No, "Non");
-                    wannaReplace.setDefaultButton(QMessageBox::Yes);
-
-                    if (wannaReplace.exec() == QMessageBox::No)
+                    if (!wannaReplace())
                     {
                         replaceConfig = false;
                         dbar->setValue(100);
@@ -243,12 +253,7 @@ QGridLayout* Installer::nextStage(int incetape)
 
                 if (QFile::exists(target + "/settings.dat"))
                 {
-                    QMessageBox wannaReplace(QMessageBox::Question, "Remplacer", "Une configuration existe déjà pour " + client + " pour " + os + "<br />Voulez-vous la remplacer ?<br />Il est conseillé de la remplacer sauf si vous savez ce que vous faites", QMessageBox::Yes | QMessageBox::No);
-                    wannaReplace.setButtonText(QMessageBox::Yes, "Oui");
-                    wannaReplace.setButtonText(QMessageBox::No, "Non");
-                    wannaReplace.setDefaultButton(QMessageBox::Yes);
-
-                    if (wannaReplace.exec() == QMessageBox::No)
+                    if (!wannaReplace())
                     {
                         replaceConfig = false;
                         dbar->setValue(100);
@@ -371,6 +376,19 @@ void Installer::clientChanged()
     }
 }
 
+bool Installer::wannaReplace()
+{
+    QMessageBox wannaReplace(QMessageBox::Question, "Remplacer", "Une configuration existe déjà pour " + client + " pour " + os + "<br />Voulez-vous la remplacer ?<br />Il est conseillé de la remplacer sauf si vous savez ce que vous faites", QMessageBox::Yes | QMessageBox::No);
+    wannaReplace.setButtonText(QMessageBox::Yes, "Oui");
+    wannaReplace.setButtonText(QMessageBox::No, "Non");
+    wannaReplace.setDefaultButton(QMessageBox::Yes);
+
+    if (wannaReplace.exec() == QMessageBox::Yes)
+        return true;
+    else
+        return false;
+}
+
 void Installer::saveDownloadedFile()
 {
     QFile file(filePath);
@@ -428,9 +446,7 @@ void Installer::pressedFinish()
 
         QString path = client;
         if (client == "µTorrent 2.2.1")
-        {
             path = "uTorrent";
-        }
 
         clientProcess->startDetached(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/" + path + "/" + path + ".exe"), QStringList());
     }
@@ -453,9 +469,7 @@ void Installer::copy(QString argsource, QString argtarget)
     if (QFile::exists(argsource))
     {
         if (QFile::copy(argsource, argtarget))
-        {
             return;
-        }
         else
         {
             QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à <br />" + argtarget + " ?");
@@ -471,13 +485,9 @@ void Installer::rename(QString argsource, QString argtarget)
     if (QFile::exists(argsource))
     {
         if (QFile::rename(argsource, argtarget))
-        {
             return;
-        }
         else if (QFile::remove(argtarget) && QFile::rename(argsource, argtarget))
-        {
             return;
-        }
         else
         {
             QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à <br />" + argtarget + " ?");
@@ -492,9 +502,7 @@ void Installer::remove(QString argfile)
     if (QFile::exists(argfile))
     {
         if (QFile::remove(argfile))
-        {
             return;
-        }
         else
         {
             QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Avez-vous les droits d'accès à <br />" + argfile + " ?");
