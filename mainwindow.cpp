@@ -7,9 +7,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Détection approfondie de l'OS
+    // Détection du Windows
     QString os;
-    #if defined(Q_OS_WIN) // Windows
     if (QSysInfo::windowsVersion() == QSysInfo::WV_NT)
         os = "Windows NT";
     else if (QSysInfo::windowsVersion() == QSysInfo::WV_2000)
@@ -28,15 +27,6 @@ MainWindow::MainWindow(QWidget *parent) :
         os = "Windows 8.1";
     else
         os = "Windows";
-    #elif defined(Q_OS_MAC) // Mac
-    os = "Mac OS X";
-    #elif defined(Q_OS_LINUX) // Linux
-    os = "Linux";
-    #else // Autres systèmes
-    os = "Inconnu";
-    QMessageBox::critical(this, "Erreur", "Votre système d'exploitation n'est pas supporté<br /><a href='http://irc.t411.io/checker/'>Checker en ligne</a>");
-    qApp->quit();
-    #endif
 
     installer = new Installer(this, os);
 

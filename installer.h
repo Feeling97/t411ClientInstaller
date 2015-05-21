@@ -17,10 +17,8 @@
 #include <QPushButton>
 #include <QRadioButton>
 
-#if defined(Q_OS_WIN)
-    #include <windows.h>
-    #include <Tlhelp32.h>
-#endif
+#include <windows.h>
+#include <Tlhelp32.h>
 
 #include "mainwindow.h"
 #include "aboutlabel.h"
@@ -60,9 +58,7 @@ private:
     void copy(QString argsource, QString argtarget);
     void rename(QString argsource, QString argtarget);
     void remove(QString argfile);
-    #if defined(Q_OS_WIN)
-        void killProcessByName(const char *filename);
-    #endif
+    void killProcessByName(const char *filename);
 
     int etape;
     QString os, client, filePath;
@@ -72,9 +68,7 @@ private:
     QGroupBox *chosedClient;
     QLabel *t411label;
     AboutLabel *logolabel;
-    #if defined(Q_OS_WIN)
-        QRadioButton *utorrentButton, *qbittorrentButton;
-    #endif
+    QRadioButton *utorrentButton, *qbittorrentButton;
     bool isDownloaded, isInstalled, readyToInstall, readyToConfig, finished;
 };
 

@@ -64,11 +64,9 @@ QGridLayout* Installer::nextStage(int incetape)
         centerlayout->addWidget(text);
         centerlayout->setContentsMargins(0, 100, 0, 0);
         centerlayout->addStretch();
-        #if defined(Q_OS_WIN)
         QPushButton *goToChoice = new QPushButton("Autres clients");
         centerlayout->addWidget(goToChoice, Qt::AlignCenter);
         connect(goToChoice, SIGNAL(released()), this, SLOT(goToChoice()));
-        #endif
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
         parent->enableNext();
     }
@@ -85,14 +83,6 @@ QGridLayout* Installer::nextStage(int incetape)
                 fileUrl.setUrl("http://irc.t411.io/logiciels/qbittorrent_3.1.11_setup.exe");
             else if (client == "µTorrent 2.2.1")
                 fileUrl.setUrl("http://irc.t411.io/logiciels/2-2-1-build-25130-utorrent.exe");
-            else if (client == "Transmission 2.84" && os == "Mac")
-                fileUrl.setUrl("http://irc.t411.io/logiciels/Transmission-2.84.dmg");
-            else if (os == "Linux")
-            {
-                QMessageBox::critical(parent, "Erreur", "Le téléchargement et l'installation de " + client + " pour " + os + " n'est pas encore pris en charge<br />\
-                Vous pouvez aller sur le site officiel de " + client + " en cliquant <a href=\"http://www.transmissionbt.com/\">ici</a>");
-                qApp->quit();
-            }
             else
             {
                 QMessageBox::critical(parent, "Erreur", "Impossible de déterminer le lien de téléchargement de " + client + " pour " + os);
@@ -101,11 +91,7 @@ QGridLayout* Installer::nextStage(int incetape)
 
             fileDownload = new FileDownloader(fileUrl, this);
             filePath = qApp->applicationDirPath();
-            #if defined(Q_OS_WIN)
-                filePath += "/setup.exe";
-            #elif defined(Q_OS_MAC)
-                filePath += "/setup.dmg";
-            #endif
+            filePath += "/setup.exe";
             connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
             dbar->setValue(0);
         }
@@ -129,9 +115,7 @@ QGridLayout* Installer::nextStage(int incetape)
         {
             if (client == "qBittorrent")
             {
-                #if defined(Q_OS_WIN)
-                    killProcessByName("qBittorrent.exe");
-                #endif
+                killProcessByName("qBittorrent.exe");
                 QProcess *setup = new QProcess(this);
                 QStringList args;
                 args << "/S";
@@ -161,19 +145,10 @@ QGridLayout* Installer::nextStage(int incetape)
                 }
                 else
                 {
-                    #if defined(Q_OS_WIN)
-                        killProcessByName("uTorrent.exe");
-                    #endif
+                    killProcessByName("uTorrent.exe");
                     QTimer::singleShot(2000, this, SLOT(installuTorrent()));
                     dbar->setValue(33);
                 }
-            }
-            else if (client == "Transmission 2.84" && os == "Mac")
-            {
-                QProcess *setup = new QProcess(this);
-                setup->start(qApp->applicationDirPath() + "/setup.dmg");
-                connect(setup, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finishedSetup(int, QProcess::ExitStatus)));
-                dbar->setValue(33);
             }
             else
             {
@@ -227,9 +202,7 @@ QGridLayout* Installer::nextStage(int incetape)
 
                 if (replaceConfig)
                 {
-                    #if defined(Q_OS_WIN)
-                        killProcessByName("qBittorrent.exe");
-                    #endif
+                    killProcessByName("qBittorrent.exe");
                     QTimer::singleShot(2000, this, SLOT(installConfig()));
                     dbar->setValue(66);
                 }
@@ -286,9 +259,7 @@ QGridLayout* Installer::nextStage(int incetape)
                 if (replaceConfig)
                 {
                     copy(target + "/resume.dat", target + "/resume.bak.dat");
-                    #if defined(Q_OS_WIN)
-                        killProcessByName("uTorrent.exe");
-                    #endif
+                    killProcessByName("uTorrent.exe");
                     QTimer::singleShot(2000, this, SLOT(installConfig()));
                     dbar->setValue(66);
                 }
@@ -312,12 +283,6 @@ QGridLayout* Installer::nextStage(int incetape)
                 finished = true;
             }
         }
-        else if (client == "Transmission 2.84" && os == "Mac")
-        {
-            QMessageBox::critical(parent, "Erreur", "Le téléchargement et l'installation de la configuration de " + client + " pour " + os + " n'est pas encore pris en charge<br />\
-            Vous pouvez aller sur le tuto de configuration de " + client + " en cliquant <a href=\"http://irc.t411.io/pics/tuto-tr-mac.png/\">ici</a>");
-            qApp->quit();
-        }
         else
         {
             QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Contactez Feeling97 en indiquant votre OS et le client que le programme vous conseille");
@@ -337,7 +302,7 @@ QGridLayout* Installer::nextStage(int incetape)
         centerlayout->addWidget(launchClient);
         centerlayout->addWidget(createLink);
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
-        this->remove(qApp->applicationDirPath() + "/setup.exe");
+        remove(qApp->applicationDirPath() + "/setup.exe");
         parent->enableFinish();
     }
 
@@ -355,31 +320,27 @@ QGridLayout* Installer::nextStage(int incetape)
 
 void Installer::determineClient()
 {
-    #if defined(Q_OS_WIN) // Windows
-        if (os == "Windows 8.1")
-            client = "qBittorrent";
-        else if (os == "Windows 8")
-            client = "qBittorrent";
-        else if (os == "Windows 7")
-            client = "µTorrent 2.2.1";
-        else if (os == "Windows Vista")
-            client = "µTorrent 2.2.1";
-        else if (os == "Windows XP x64")
-            client = "µTorrent 2.2.1";
-        else if (os == "Windows XP")
-            client = "µTorrent 2.2.1";
-        else if (os == "Windows 2000")
-            client = "µTorrent 2.2.1";
-        else if (os == "Windows NT")
-            client = "µTorrent 2.2.1";
-        else
-        {
-            QMessageBox::critical(parent, "Erreur", "Impossible de déterminer le client correspondant à votre système<br />Vous pouvez utiliser le checker en ligne :<br /><a href='http://irc.t411.io/checker/'>Cliquez ici</a>");
-            qApp->quit();
-        }
-    #else // Linux et Mac
-        client = "Transmission 2.84";
-    #endif
+    if (os == "Windows 8.1")
+        client = "qBittorrent";
+    else if (os == "Windows 8")
+        client = "qBittorrent";
+    else if (os == "Windows 7")
+        client = "µTorrent 2.2.1";
+    else if (os == "Windows Vista")
+        client = "µTorrent 2.2.1";
+    else if (os == "Windows XP x64")
+        client = "µTorrent 2.2.1";
+    else if (os == "Windows XP")
+        client = "µTorrent 2.2.1";
+    else if (os == "Windows 2000")
+        client = "µTorrent 2.2.1";
+    else if (os == "Windows NT")
+        client = "µTorrent 2.2.1";
+    else
+    {
+        QMessageBox::critical(parent, "Erreur", "Impossible de déterminer le client correspondant à votre système<br />Vous pouvez utiliser le checker en ligne :<br /><a href='http://irc.t411.io/checker/'>Cliquez ici</a>");
+        qApp->quit();
+    }
 }
 
 void Installer::doRefreshLayout(QGridLayout *newlayout)
@@ -542,7 +503,6 @@ void Installer::remove(QString argfile)
     }
 }
 
-#if defined(Q_OS_WIN)
 void Installer::killProcessByName(const char *filename)
 {
     HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
@@ -566,4 +526,3 @@ void Installer::killProcessByName(const char *filename)
     }
     CloseHandle(hSnapShot);
 }
-#endif
