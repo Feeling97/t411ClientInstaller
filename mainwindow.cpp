@@ -64,7 +64,7 @@ void MainWindow::refreshLayout(QGridLayout *newlayout)
     ui->o_content->setLayout(newlayout);
 }
 
-void MainWindow::pressedQuit()
+void MainWindow::closeEvent(QCloseEvent *event)
 {
     QMessageBox wannaQuit(QMessageBox::Question, "Quitter", "Voulez-vous vraiment quitter l'installation ?", QMessageBox::Yes | QMessageBox::No);
     wannaQuit.setButtonText(QMessageBox::Yes, "Oui");
@@ -72,7 +72,14 @@ void MainWindow::pressedQuit()
     wannaQuit.setDefaultButton(QMessageBox::No);
 
     if (wannaQuit.exec() == QMessageBox::Yes)
-        qApp->quit();
+        event->accept();
+    else
+        event->ignore();
+}
+
+void MainWindow::pressedQuit()
+{
+    close();
 }
 
 void MainWindow::pressedNext()

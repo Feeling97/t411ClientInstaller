@@ -14,7 +14,6 @@
     along with t411 Client Installer.  If not, see <http://www.gnu.org/licenses/>. */
 
 #include "filedownloader.h"
-#include "installer.h"
 
 FileDownloader::FileDownloader(QUrl imageUrl, Installer *parent) : QObject(parent)
 {

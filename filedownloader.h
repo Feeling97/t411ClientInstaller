@@ -16,10 +16,6 @@
 #ifndef FILEDOWNLOADER_H
 #define FILEDOWNLOADER_H
 
-#include <QByteArray>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
 #include "installer.h"
 
 class FileDownloader : public QObject

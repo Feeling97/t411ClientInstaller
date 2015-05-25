@@ -16,10 +16,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QDialog>
-#include <QGridLayout>
-#include <QMessageBox>
-#include <QLabel>
 #include "installer.h"
 
 namespace Ui {
@@ -45,6 +41,7 @@ public slots:
     void pressedQuit();
 
 private:
+    void closeEvent(QCloseEvent *event);
     void clear();
 
 private:

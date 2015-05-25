@@ -16,16 +16,14 @@
 #ifndef INSTALLER_H
 #define INSTALLER_H
 
-#include <QString>
-#include <QGridLayout>
+#include <QApplication>
 #include <QVBoxLayout>
-#include <QLabel>
 #include <QMessageBox>
 #include <QProgressBar>
-#include <QSpacerItem>
-#include <QtNetwork>
-#include <QFile>
-#include <QDataStream>
+#include <QTextCodec>
+#include <QNetworkReply>
+#include <QDir>
+#include <QTimer>
 #include <QProcess>
 #include <QCheckBox>
 #include <QGroupBox>
@@ -84,7 +82,7 @@ private:
     QGroupBox *chosedClient;
     QLabel *t411label;
     AboutLabel *logolabel;
-    QRadioButton *utorrentButton, *qbittorrentButton;
+    QRadioButton *utorrentButton, *qbittorrentButton, *bittorrentButton, *vuzeButton, *delugeButton;
     bool isDownloaded, isInstalled, readyToInstall, readyToConfig, finished;
 };
 

@@ -30,6 +30,9 @@ public:
 
 public slots:
     void mouseReleaseEvent(QMouseEvent *event);
+
+private:
+    QMessageBox *about;
 };
 
 #endif // ABOUTLABEL_H

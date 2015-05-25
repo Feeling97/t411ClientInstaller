@@ -50,16 +50,32 @@ QGridLayout* Installer::nextStage(int incetape)
         chosedClient = new QGroupBox("Choisissez le client que vous voulez installer :", parent);
         utorrentButton = new QRadioButton("µTorrent 2.2.1", chosedClient);
         qbittorrentButton = new QRadioButton("qBittorrent", chosedClient);
+        bittorrentButton = new QRadioButton("Bittorrent", chosedClient);
+        vuzeButton = new QRadioButton("Vuze", chosedClient);
+        delugeButton = new QRadioButton("Deluge", chosedClient);
         if (client == "µTorrent 2.2.1")
             utorrentButton->setChecked(true);
         else if (client == "qBittorrent")
             qbittorrentButton->setChecked(true);
-        centerlayout->addWidget(utorrentButton, Qt::AlignVCenter);
+        else if (client == "Bittorrent")
+            bittorrentButton->setChecked(true);
+        else if (client == "Vuze")
+            vuzeButton->setChecked(true);
+        else if (client == "Deluge")
+            delugeButton->setChecked(true);
+        if (os != "Windows 8" && os != "Windows 8.1")
+            centerlayout->addWidget(utorrentButton, Qt::AlignVCenter);
         centerlayout->addWidget(qbittorrentButton, Qt::AlignVCenter);
+        centerlayout->addWidget(bittorrentButton, Qt::AlignVCenter);
+        centerlayout->addWidget(vuzeButton, Qt::AlignVCenter);
+        centerlayout->addWidget(delugeButton, Qt::AlignVCenter);
         chosedClient->setLayout(centerlayout);
         layout->addWidget(chosedClient, 0, 0, 0, 0, Qt::AlignVCenter);
         connect(utorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
         connect(qbittorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
+        connect(bittorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
+        connect(vuzeButton, SIGNAL(released()), this, SLOT(clientChanged()));
+        connect(delugeButton, SIGNAL(released()), this, SLOT(clientChanged()));
     }
     else if (etape == 1) { // Etape 1: Présentation
         QVBoxLayout *centerlayout = new QVBoxLayout();
@@ -95,9 +111,15 @@ QGridLayout* Installer::nextStage(int incetape)
         {
             QUrl fileUrl;
             if (client == "qBittorrent")
-                fileUrl.setUrl("http://irc.t411.io/logiciels/qbittorrent_3.1.11_setup.exe");
+                fileUrl.setUrl("http://88.198.168.163/logiciels/qbittorrent_3.1.11_setup.exe");
             else if (client == "µTorrent 2.2.1")
-                fileUrl.setUrl("http://irc.t411.io/logiciels/2-2-1-build-25130-utorrent.exe");
+                fileUrl.setUrl("http://88.198.168.163/logiciels/2-2-1-build-25130-utorrent.exe");
+            else if (client == "Bittorrent")
+                fileUrl.setUrl("http://88.198.168.163/logiciels/bittorrent-6-4.exe");
+            else if (client == "Vuze")
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/installs/VuzeInstaller.exe");
+            else if (client == "Deluge")
+                fileUrl.setUrl("http://88.198.168.163/logiciels/deluge-1.3.5-win32-setup.exe");
             else
             {
                 QMessageBox::critical(parent, "Erreur", "Impossible de déterminer le lien de téléchargement de " + client + " pour " + os);
@@ -128,12 +150,22 @@ QGridLayout* Installer::nextStage(int incetape)
 
         if (!isInstalled)
         {
-            if (client == "qBittorrent")
+            if (client == "qBittorrent" || client == "Bittorrent" || client == "Deluge")
             {
-                killProcessByName("qBittorrent.exe");
+                killProcessByName(QString(client + ".exe").toUtf8().data());
                 QProcess *setup = new QProcess(this);
                 QStringList args;
                 args << "/S";
+                setup->start(qApp->applicationDirPath() + "/setup.exe", args);
+                connect(setup, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finishedSetup(int, QProcess::ExitStatus)));
+                dbar->setValue(33);
+            }
+            else if (client == "Vuze")
+            {
+                killProcessByName("Azureus.exe");
+                QProcess *setup = new QProcess(this);
+                QStringList args;
+                args << "-q" << "-overwrite";
                 setup->start(qApp->applicationDirPath() + "/setup.exe", args);
                 connect(setup, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finishedSetup(int, QProcess::ExitStatus)));
                 dbar->setValue(33);
@@ -167,7 +199,7 @@ QGridLayout* Installer::nextStage(int incetape)
             }
             else
             {
-                QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Contactez Feeling97 en indiquant votre OS et le client que le programme vous conseille");
+                QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Contactez Feeling97 en indiquant votre OS et le client choisi");
                 qApp->quit();
             }
         }
@@ -271,6 +303,8 @@ QGridLayout* Installer::nextStage(int incetape)
             }
             else if (!isDownloaded)
             {
+                if (!QDir(target).exists())
+                    QDir().mkdir(target);
                 remove(target + "/resume.dat");
                 rename(target + "/resume.bak.dat", target + "/resume.dat");
                 rename(target + "/settings.dat", target + "/settings.bak.dat");
@@ -279,6 +313,160 @@ QGridLayout* Installer::nextStage(int incetape)
                 fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/uTorrent.dat");
                 fileDownload = new FileDownloader(fileUrl, this);
                 filePath = target + "/settings.dat";
+                connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
+                dbar->setValue(66);
+            }
+            else
+            {
+                dbar->setValue(100);
+                finished = true;
+            }
+        }
+        else if (client == "Bittorrent")
+        {
+            QString target = QProcessEnvironment::systemEnvironment().value("AppData");
+
+            if (target.isEmpty())
+            {
+                QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Impossible d'accéder à la variable d'environnement %AppData%");
+                qApp->quit();
+            }
+
+            target += "/BitTorrent";
+
+            if (!readyToConfig)
+            {
+                bool replaceConfig = true;
+                if (QFile::exists(target + "/settings.dat"))
+                {
+                    if (!wannaReplace())
+                    {
+                        replaceConfig = false;
+                        dbar->setValue(100);
+                        finished = true;
+                    }
+                }
+
+                if (replaceConfig)
+                {
+                    copy(target + "/resume.dat", target + "/resume.bak.dat");
+                    killProcessByName("bittorrent.exe");
+                    QTimer::singleShot(2000, this, SLOT(installConfig()));
+                    dbar->setValue(66);
+                }
+            }
+            else if (!isDownloaded)
+            {
+                if (!QDir(target).exists())
+                    QDir().mkdir(target);
+                remove(target + "/resume.dat");
+                rename(target + "/resume.bak.dat", target + "/resume.dat");
+                rename(target + "/settings.dat", target + "/settings.bak.dat");
+                rename(target + "/settings.dat.old", target + "/settings.bak.dat.old");
+                QUrl fileUrl;
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/Bittorrent.dat");
+                fileDownload = new FileDownloader(fileUrl, this);
+                filePath = target + "/settings.dat";
+                connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
+                dbar->setValue(66);
+            }
+            else
+            {
+                dbar->setValue(100);
+                finished = true;
+            }
+        }
+        else if (client == "Vuze")
+        {
+            QString target = QProcessEnvironment::systemEnvironment().value("AppData");
+
+            if (target.isEmpty())
+            {
+                QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Impossible d'accéder à la variable d'environnement %AppData%");
+                qApp->quit();
+            }
+
+            target += "/Azureus";
+
+            if (!readyToConfig)
+            {
+                bool replaceConfig = true;
+                if (QFile::exists(target + "/azureus.config"))
+                {
+                    if (!wannaReplace())
+                    {
+                        replaceConfig = false;
+                        dbar->setValue(100);
+                        finished = true;
+                    }
+                }
+
+                if (replaceConfig)
+                {
+                    killProcessByName("Azureus.exe");
+                    QTimer::singleShot(2000, this, SLOT(installConfig()));
+                    dbar->setValue(66);
+                }
+            }
+            else if (!isDownloaded)
+            {
+                if (!QDir(target).exists())
+                    QDir().mkdir(target);
+                rename(target + "/azureus.config", target + "/azureus.bak.config");
+                QUrl fileUrl;
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/Vuze.config");
+                fileDownload = new FileDownloader(fileUrl, this);
+                filePath = target + "/azureus.config";
+                connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
+                dbar->setValue(66);
+            }
+            else
+            {
+                dbar->setValue(100);
+                finished = true;
+            }
+        }
+        else if (client == "Deluge")
+        {
+            QString target = QProcessEnvironment::systemEnvironment().value("AppData");
+
+            if (target.isEmpty())
+            {
+                QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Impossible d'accéder à la variable d'environnement %AppData%");
+                qApp->quit();
+            }
+
+            target += "/deluge";
+
+            if (!readyToConfig)
+            {
+                bool replaceConfig = true;
+                if (QFile::exists(target + "/core.conf"))
+                {
+                    if (!wannaReplace())
+                    {
+                        replaceConfig = false;
+                        dbar->setValue(100);
+                        finished = true;
+                    }
+                }
+
+                if (replaceConfig)
+                {
+                    killProcessByName("deluge.exe");
+                    QTimer::singleShot(2000, this, SLOT(installConfig()));
+                    dbar->setValue(66);
+                }
+            }
+            else if (!isDownloaded)
+            {
+                if (!QDir(target).exists())
+                    QDir().mkdir(target);
+                rename(target + "/core.conf", target + "/core.bak.conf");
+                QUrl fileUrl;
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/Deluge.conf");
+                fileDownload = new FileDownloader(fileUrl, this);
+                filePath = target + "/core.conf";
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
                 dbar->setValue(66);
             }
@@ -305,7 +493,11 @@ QGridLayout* Installer::nextStage(int incetape)
         createLink->setChecked(true);
         centerlayout->addWidget(new QLabel(client + " pour " + os + " est maintenant installé avec sa configuration recommandée"));
         centerlayout->addWidget(launchClient);
-        centerlayout->addWidget(createLink);
+        if (client != "Vuze" && client != "Deluge")
+        {
+            centerlayout->addWidget(createLink);
+            createLink->setChecked(false);
+        }
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
         remove(qApp->applicationDirPath() + "/setup.exe");
         parent->enableFinish();
@@ -369,6 +561,12 @@ void Installer::clientChanged()
         client = "µTorrent 2.2.1";
     else if (qbittorrentButton->isChecked())
         client = "qBittorrent";
+    else if (bittorrentButton->isChecked())
+        client = "Bittorrent";
+    else if (vuzeButton->isChecked())
+        client = "Vuze";
+    else if (delugeButton->isChecked())
+        client = "Deluge";
     else
     {
         QMessageBox::critical(parent, "Erreur", "Imposible de mémoriser le client à installer");
@@ -415,6 +613,8 @@ void Installer::finishedSetup(int code, QProcess::ExitStatus status)
     (void)code; // Ne fait rien, enlève juste le warning de variable inutilisée
     if (status == QProcess::NormalExit)
     {
+        if (client == "Vuze")
+            killProcessByName("Azureus.exe");
         isInstalled = true;
         doNextStage(0);
     }
@@ -445,10 +645,30 @@ void Installer::pressedFinish()
         QProcess *clientProcess = new QProcess();
 
         QString path = client;
+        QString exeName = client;
         if (client == "µTorrent 2.2.1")
+        {
             path = "uTorrent";
+            exeName = "uTorrent";
+        }
+        else if (client == "Vuze")
+        {
+            exeName = "Azureus";
+            if (QDir(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/Vuze").exists())
+                path = QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/Vuze";
+            else
+            {
+                path = QProcessEnvironment::systemEnvironment().value("ProgramFiles");
+                path.chop(6);
+                path += "/Vuze";
+            }
 
-        clientProcess->startDetached(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/" + path + "/" + path + ".exe"), QStringList());
+            clientProcess->startDetached(QDir::toNativeSeparators(path + "/" + exeName + ".exe"), QStringList());
+        }
+        else if (client == "Deluge")
+            exeName = "deluge";
+
+        clientProcess->startDetached(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/" + path + "/" + exeName + ".exe"), QStringList());
     }
 
     if (createLink->isChecked())
@@ -456,7 +676,9 @@ void Installer::pressedFinish()
         if (client == "µTorrent 2.2.1")
             QFile::link(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/uTorrent/uTorrent.exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/µTorrent.lnk"));
         else if (client == "qBittorrent")
-            QFile::link(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/" + client + "/" + client + ".exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/" + client + ".lnk"));
+            QFile::link(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/qBittorrent/qBittorrent.exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/" + client + ".lnk"));
+        else if (client == "Bittorrent")
+            QFile::link(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/BitTorrent/bittorrent.exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/" + client + ".lnk"));
     }
 
     qApp->quit();
