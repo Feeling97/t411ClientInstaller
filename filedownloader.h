@@ -22,8 +22,10 @@ class FileDownloader : public QObject
 {
  Q_OBJECT
  public:
+  explicit FileDownloader();
   explicit FileDownloader(QUrl imageUrl, Installer *parent = 0);
   virtual ~FileDownloader();
+  bool isConnected() const;
   QByteArray downloadedData() const;
 
  signals:

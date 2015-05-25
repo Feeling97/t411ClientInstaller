@@ -33,6 +33,13 @@ Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent)
     t411label->setPixmap(t411);
 
     logolabel = new AboutLabel;
+
+    FileDownloader test;
+    if (!test.isConnected())
+    {
+        QMessageBox::critical(parent, "Erreur", "Vous n'êtes actuellement pas connecté à Internet<br />Veuillez vous connecter puis relancer le programme");
+        exit(1);
+    }
 }
 
 Installer::~Installer() {}

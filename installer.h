@@ -29,6 +29,7 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QNetworkInterface>
 
 #include <windows.h>
 #include <Tlhelp32.h>

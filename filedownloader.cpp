@@ -15,6 +15,8 @@
 
 #include "filedownloader.h"
 
+FileDownloader::FileDownloader() {}
+
 FileDownloader::FileDownloader(QUrl imageUrl, Installer *parent) : QObject(parent)
 {
     connect(&m_WebCtrl, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileDownloaded(QNetworkReply*)));
@@ -24,6 +26,27 @@ FileDownloader::FileDownloader(QUrl imageUrl, Installer *parent) : QObject(paren
 }
 
 FileDownloader::~FileDownloader() { }
+
+bool FileDownloader::isConnected() const
+{
+    QList<QNetworkInterface> ifaces = QNetworkInterface::allInterfaces();
+    bool result = false;
+
+    for (int i = 0; i < ifaces.count(); i++)
+    {
+        QNetworkInterface iface = ifaces.at(i);
+        if (iface.flags().testFlag(QNetworkInterface::IsUp) && !iface.flags().testFlag(QNetworkInterface::IsLoopBack) )
+        {
+            for (int j=0; j<iface.addressEntries().count(); j++)
+            {
+                if (result == false)
+                    result = true;
+            }
+        }
+    }
+
+    return result;
+}
 
 void FileDownloader::fileDownloaded(QNetworkReply* pReply)
 {
