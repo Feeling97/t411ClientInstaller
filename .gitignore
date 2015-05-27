@@ -1,0 +1,4 @@
+configs/*
+exes/*
+Makefile*
+t411ClientInstaller.pro.user
