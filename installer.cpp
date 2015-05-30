@@ -649,7 +649,7 @@ void Installer::pressedFinish()
 {
     if (launchClient->isChecked())
     {
-        QProcess *clientProcess = new QProcess();
+        QProcess *clientProcess = new QProcess;
 
         QString path = client;
         QString exeName = client;
