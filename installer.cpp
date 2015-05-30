@@ -500,7 +500,7 @@ QGridLayout* Installer::nextStage(int incetape)
         createLink->setChecked(true);
         centerlayout->addWidget(new QLabel(client + " pour " + os + " est maintenant installé avec sa configuration recommandée"));
         centerlayout->addWidget(launchClient);
-        if (client != "Vuze" && client != "Deluge")
+        if (client == "Vuze" || client == "Deluge")
         {
             centerlayout->addWidget(createLink);
             createLink->setChecked(false);
