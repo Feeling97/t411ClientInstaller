@@ -39,13 +39,18 @@ bool FileDownloader::isConnected() const
         {
             for (int j=0; j<iface.addressEntries().count(); j++)
             {
-                if (result == false)
-                    result = true;
+                result = true;
             }
         }
     }
 
-    return result;
+    if (result)
+    {
+        if (QProcess::execute("ping", QStringList() << "-n" << "1" << "www.google.fr") == 0)
+            return true;
+    }
+
+    return false;
 }
 
 void FileDownloader::fileDownloaded(QNetworkReply* pReply)
