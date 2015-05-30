@@ -37,7 +37,7 @@ bool FileDownloader::isConnected() const
         QNetworkInterface iface = ifaces.at(i);
         if (iface.flags().testFlag(QNetworkInterface::IsUp) && !iface.flags().testFlag(QNetworkInterface::IsLoopBack) )
         {
-            for (int j=0; j<iface.addressEntries().count(); j++)
+            for (int j = 0; j<iface.addressEntries().count(); j++)
             {
                 result = true;
             }
