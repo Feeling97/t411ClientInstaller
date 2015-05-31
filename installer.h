@@ -52,6 +52,7 @@ public:
 
 public slots:
     void doNextStage(int incetape = 1);
+    void pressedFinish();
 
 signals:
     void refreshLayout(QGridLayout*);
@@ -64,7 +65,6 @@ private slots:
     void finishedSetup(int code, QProcess::ExitStatus status);
     void installuTorrent();
     void installConfig();
-    void pressedFinish();
     void goToChoice();
     void clientChanged();
 

@@ -66,6 +66,9 @@ void MainWindow::refreshLayout(QGridLayout *newlayout)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    if (ui->b_suivant->text() == "Terminer")
+        installer->pressedFinish();
+
     QMessageBox wannaQuit(QMessageBox::Question, "Quitter", "Voulez-vous vraiment quitter l'installation ?", QMessageBox::Yes | QMessageBox::No);
     wannaQuit.setButtonText(QMessageBox::Yes, "Oui");
     wannaQuit.setButtonText(QMessageBox::No, "Non");
