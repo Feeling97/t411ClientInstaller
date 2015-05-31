@@ -501,10 +501,9 @@ QGridLayout* Installer::nextStage(int incetape)
         centerlayout->addWidget(new QLabel(client + " pour " + os + " est maintenant installé avec sa configuration recommandée"));
         centerlayout->addWidget(launchClient);
         if (client == "Vuze" || client == "Deluge")
-        {
-            centerlayout->addWidget(createLink);
             createLink->setChecked(false);
-        }
+        else
+            centerlayout->addWidget(createLink);
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
         remove(qApp->applicationDirPath() + "/setup.exe");
         parent->enableFinish();
