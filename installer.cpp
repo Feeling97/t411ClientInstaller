@@ -159,7 +159,7 @@ QGridLayout* Installer::nextStage(int incetape)
         {
             if (client == "qBittorrent" || client == "Bittorrent" || client == "Deluge")
             {
-                killProcessByName(QString(client + ".exe").toUtf8().data());
+                killProcessByName(QString(client + ".exe").toLower().toUtf8().data());
                 QProcess *setup = new QProcess(this);
                 QStringList args;
                 args << "/S";
