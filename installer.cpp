@@ -108,7 +108,7 @@ QGridLayout* Installer::nextStage(int incetape)
         "Configuration recommandée :"
         "<ul>"
             "<li>Port " + QString::number(port) + "</li>"
-            "<li>DHT/Recherche locale de pairs desactivé</li>"
+            "<li>DHT/Recherche locale de pairs desactivée</li>"
             "<li>Mises à jour automatiques désactivées</li>"
             "<li>Aucune limite d'envoi et de réception</li>"
             "<li>Pré-allocation de l'espace disque pour les nouveaux fichiers</li>"
