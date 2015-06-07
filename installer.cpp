@@ -542,27 +542,10 @@ QGridLayout* Installer::nextStage(int incetape)
 
 void Installer::determineClient()
 {
-    if (os == "Windows 8.1")
+    if (os == "Windows 8.1" || os == "Windows 8")
         client = "qBittorrent";
-    else if (os == "Windows 8")
-        client = "qBittorrent";
-    else if (os == "Windows 7")
-        client = "µTorrent 2.2.1";
-    else if (os == "Windows Vista")
-        client = "µTorrent 2.2.1";
-    else if (os == "Windows XP x64")
-        client = "µTorrent 2.2.1";
-    else if (os == "Windows XP")
-        client = "µTorrent 2.2.1";
-    else if (os == "Windows 2000")
-        client = "µTorrent 2.2.1";
-    else if (os == "Windows NT")
-        client = "µTorrent 2.2.1";
     else
-    {
-        QMessageBox::critical(parent, "Erreur", "Impossible de déterminer le client correspondant à votre système<br />Vous pouvez utiliser le checker en ligne :<br /><a href='http://irc.t411.io/checker/'>Cliquez ici</a>");
-        qApp->quit();
-    }
+        client = "µTorrent 2.2.1";
 }
 
 void Installer::makeConfig()
