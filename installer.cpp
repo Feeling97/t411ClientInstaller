@@ -542,7 +542,7 @@ QGridLayout* Installer::nextStage(int incetape)
 
 void Installer::determineClient()
 {
-    if (os == "Windows 8.1" || os == "Windows 8")
+    if (os == "Windows 8.1" || os == "Windows 8" || os == "Windows")
         client = "qBittorrent";
     else
         client = "µTorrent 2.2.1";
