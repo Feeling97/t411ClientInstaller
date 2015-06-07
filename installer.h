@@ -31,16 +31,20 @@
 #include <QRadioButton>
 #include <QNetworkInterface>
 #include <QSettings>
+#include <QLineEdit>
+#include <QFileDialog>
 
 #include <windows.h>
 #include <Tlhelp32.h>
 
 #include "mainwindow.h"
 #include "aboutlabel.h"
+#include "options.h"
 
 class MainWindow;
 class FileDownloader;
 class AboutLabel;
+class Options;
 class Installer : public QObject
 {
     Q_OBJECT
@@ -50,6 +54,9 @@ public:
     virtual ~Installer();
     QGridLayout* nextStage(int incetape = 1);
     void determineClient();
+    MainWindow* getParent();
+    void setOption(QString name, QVariant value);
+    QString getOption(QString name);
 
 public slots:
     void doNextStage(int incetape = 1);
@@ -70,6 +77,7 @@ private slots:
     void goToChoice();
     void clientChanged();
     void makeConfig();
+    void openOptions();
 
 private:
     bool wannaReplace();
@@ -87,6 +95,7 @@ private:
     QGroupBox *chosedClient;
     QLabel *t411label;
     AboutLabel *logolabel;
+    Options *options;
     QRadioButton *utorrentButton, *qbittorrentButton, *bittorrentButton, *vuzeButton, *delugeButton;
     bool isDownloaded, isInstalled, readyToInstall, readyToConfig, finished;
 };

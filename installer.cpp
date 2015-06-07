@@ -36,6 +36,8 @@ Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent)
     connect(this, SIGNAL(finishedStage()), this, SLOT(doNextStage()), Qt::QueuedConnection);
     connect(this, SIGNAL(setupConfig()), this, SLOT(makeConfig()), Qt::QueuedConnection);
 
+    options = new Options(this);
+
     QPixmap t411(":/images/t411.png");
     t411label = new QLabel;
     t411label->setObjectName("t411label");
@@ -56,13 +58,14 @@ Installer::~Installer() {}
 QGridLayout* Installer::nextStage(int incetape)
 {
     etape = etape + incetape;
-    QGridLayout *layout = new QGridLayout();
+    QGridLayout *layout = new QGridLayout;
     layout->addWidget(logolabel, 0, 0, 0, 0, Qt::AlignTop);
     layout->addWidget(t411label, 0, 0, 0, 0, Qt::AlignRight | Qt::AlignTop);
 
     if (etape == 0) // Choix du client
     {
-        QVBoxLayout *centerlayout = new QVBoxLayout();
+        QVBoxLayout *centerlayout = new QVBoxLayout;
+        QVBoxLayout *boxlayout = new QVBoxLayout;
         chosedClient = new QGroupBox("Choisissez le client que vous voulez installer :", parent);
         utorrentButton = new QRadioButton("µTorrent 2.2.1", chosedClient);
         qbittorrentButton = new QRadioButton("qBittorrent", chosedClient);
@@ -80,13 +83,19 @@ QGridLayout* Installer::nextStage(int incetape)
         else if (client == "Deluge")
             delugeButton->setChecked(true);
         if (os != "Windows 8" && os != "Windows 8.1")
-            centerlayout->addWidget(utorrentButton, Qt::AlignVCenter);
-        centerlayout->addWidget(qbittorrentButton, Qt::AlignVCenter);
-        centerlayout->addWidget(bittorrentButton, Qt::AlignVCenter);
-        centerlayout->addWidget(vuzeButton, Qt::AlignVCenter);
-        centerlayout->addWidget(delugeButton, Qt::AlignVCenter);
-        chosedClient->setLayout(centerlayout);
-        layout->addWidget(chosedClient, 0, 0, 0, 0, Qt::AlignVCenter);
+           boxlayout->addWidget(utorrentButton, Qt::AlignVCenter);
+        boxlayout->addWidget(qbittorrentButton, Qt::AlignVCenter);
+        boxlayout->addWidget(bittorrentButton, Qt::AlignVCenter);
+        boxlayout->addWidget(vuzeButton, Qt::AlignVCenter);
+        boxlayout->addWidget(delugeButton, Qt::AlignVCenter);
+        chosedClient->setLayout(boxlayout);
+        centerlayout->addWidget(chosedClient);
+        centerlayout->addStretch();
+        QPushButton *advancedOptions = new QPushButton("Avancé");
+        connect(advancedOptions, SIGNAL(released()), this, SLOT(openOptions()));
+        centerlayout->addWidget(advancedOptions);
+        centerlayout->setContentsMargins(0, 100, 0, 0);
+        layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
         connect(utorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
         connect(qbittorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
         connect(bittorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
@@ -94,11 +103,11 @@ QGridLayout* Installer::nextStage(int incetape)
         connect(delugeButton, SIGNAL(released()), this, SLOT(clientChanged()));
     }
     else if (etape == 1) { // Etape 1: Présentation
-        QVBoxLayout *centerlayout = new QVBoxLayout();
+        QVBoxLayout *centerlayout = new QVBoxLayout;
         QLabel *text = new QLabel("Ce programme va installer " + client + " pour " + os + " avec la configuration recommandée pour <a href=\"http://www.t411.io/\">t411.io</a><br /><br />"
         "Configuration recommandée :"
         "<ul>"
-            "<li>Port 50500</li>"
+            "<li>Port " + QString::number(port) + "</li>"
             "<li>DHT/Recherche locale de pairs desactivé</li>"
             "<li>Mises à jour automatiques désactivées</li>"
             "<li>Aucune limite d'envoi et de réception</li>"
@@ -111,15 +120,15 @@ QGridLayout* Installer::nextStage(int incetape)
         centerlayout->addWidget(text);
         centerlayout->setContentsMargins(0, 100, 0, 0);
         centerlayout->addStretch();
-        QPushButton *goToChoice = new QPushButton("Autres clients");
+        QPushButton *goToChoice = new QPushButton("Autres options");
         centerlayout->addWidget(goToChoice, Qt::AlignCenter);
         connect(goToChoice, SIGNAL(released()), this, SLOT(goToChoice()));
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
         parent->enableNext();
     }
     else if (etape == 2) { // Etape 2: Téléchargement
-        QVBoxLayout *centerlayout = new QVBoxLayout();
-        QProgressBar *dbar = new QProgressBar();
+        QVBoxLayout *centerlayout = new QVBoxLayout;
+        QProgressBar *dbar = new QProgressBar;
 
         centerlayout->addWidget(new QLabel("Téléchargement de " + client + "..."));
 
@@ -159,8 +168,8 @@ QGridLayout* Installer::nextStage(int incetape)
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignCenter);
     }
     else if (etape == 3) { // Etape 3: Installation du client
-        QVBoxLayout *centerlayout = new QVBoxLayout();
-        QProgressBar *dbar = new QProgressBar();
+        QVBoxLayout *centerlayout = new QVBoxLayout;
+        QProgressBar *dbar = new QProgressBar;
 
         centerlayout->addWidget(new QLabel("Installation de " + client + "..."));
 
@@ -228,8 +237,8 @@ QGridLayout* Installer::nextStage(int incetape)
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignCenter);
     }
     else if (etape == 4) { // Etape 4: Installation de la config
-        QVBoxLayout *centerlayout = new QVBoxLayout();
-        QProgressBar *dbar = new QProgressBar();
+        QVBoxLayout *centerlayout = new QVBoxLayout;
+        QProgressBar *dbar = new QProgressBar;
 
         centerlayout->addWidget(new QLabel("Installation de la configuration recommandée pour " + client + "..."));
 
@@ -512,7 +521,7 @@ QGridLayout* Installer::nextStage(int incetape)
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignCenter);
     }
     else if (etape == 5) { // Etape 5: Fin
-        QVBoxLayout *centerlayout = new QVBoxLayout();
+        QVBoxLayout *centerlayout = new QVBoxLayout;
         launchClient = new QCheckBox("Lancer " + client + " à la fermeture", parent);
         createLink = new QCheckBox("Créer un raccourci pour " + client + " sur le bureau", parent);
         launchClient->setChecked(true);
@@ -546,6 +555,26 @@ void Installer::determineClient()
         client = "qBittorrent";
     else
         client = "µTorrent 2.2.1";
+}
+
+void Installer::setOption(QString name, QVariant value)
+{
+    if (name == "port")
+        port = value.toInt();
+    else if (name == "files")
+        downloadsPath = value.toString();
+    else
+        torrentsPath = value.toString();
+}
+
+QString Installer::getOption(QString name)
+{
+    if (name == "port")
+        return QString::number(port);
+    else if (name == "files")
+        return QDir::toNativeSeparators(downloadsPath);
+    else
+        return QDir::toNativeSeparators(torrentsPath);
 }
 
 void Installer::makeConfig()
@@ -607,6 +636,11 @@ void Installer::clientChanged()
         QMessageBox::critical(parent, "Erreur", "Imposible de mémoriser le client à installer");
         qApp->quit();
     }
+}
+
+void Installer::openOptions()
+{
+    options->open();
 }
 
 bool Installer::wannaReplace()
@@ -790,4 +824,9 @@ void Installer::killProcessByName(const char *filename)
         hRes = Process32Next(hSnapShot, &pEntry);
     }
     CloseHandle(hSnapShot);
+}
+
+MainWindow* Installer::getParent()
+{
+    return parent;
 }
