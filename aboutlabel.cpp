@@ -27,6 +27,18 @@ AboutLabel::AboutLabel()
 
 AboutLabel::~AboutLabel() {}
 
+void AboutLabel::enterEvent(QEvent *event)
+{
+    qApp->setOverrideCursor(Qt::PointingHandCursor);
+    event->accept();
+}
+
+void AboutLabel::leaveEvent(QEvent *event)
+{
+    qApp->restoreOverrideCursor();
+    event->accept();
+}
+
 void AboutLabel::mouseReleaseEvent(QMouseEvent *event)
 {
     event->accept();

@@ -16,6 +16,7 @@
 #ifndef ABOUTLABEL_H
 #define ABOUTLABEL_H
 
+#include <QApplication>
 #include <QLabel>
 #include <QMouseEvent>
 #include <QMessageBox>
@@ -29,6 +30,8 @@ public:
     ~AboutLabel();
 
 public slots:
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 
 private:
