@@ -1,7 +1,7 @@
 IDI_ICON1 ICON DISCARDABLE "icon.ico"
 1 VERSIONINFO
-FILEVERSION 0,4,0,0
-PRODUCTVERSION 0,4,0,0
+FILEVERSION 0,5,0,0
+PRODUCTVERSION 0,5,0,0
 FILEOS 0x4
 FILETYPE 0x0
 BEGIN
@@ -11,12 +11,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "Feeling97"
       VALUE "FileDescription", "t411ClientInstaller"
-      VALUE "FileVersion", "0.4"
+      VALUE "FileVersion", "0.5"
       VALUE "InternalName", "t411ClientInstaller"
       VALUE "LegalCopyright", ""
       VALUE "OriginalFilename", "t411ClientInstaller.exe"
       VALUE "ProductName", "t411ClientInstaller"
-      VALUE "ProductVersion", "0.4"
+      VALUE "ProductVersion", "0.5"
     END
   END 
   
