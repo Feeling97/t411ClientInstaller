@@ -25,7 +25,16 @@ Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent)
     readyToInstall = false;
     readyToConfig = false;
     finished = false;
+    port = 50500;
+    QSettings regAccess("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", QSettings::NativeFormat);
+    downloadsPath = regAccess.value("{374DE290-123F-4565-9164-39C4925E467B}", QProcessEnvironment::systemEnvironment().value("USERPROFILE") + "/Downloads").toString();
+    if (!QDir(downloadsPath).exists())
+        QDir(downloadsPath).mkdir(downloadsPath);
+    torrentsPath = downloadsPath + "/Torrents";
+    if (!QDir(torrentsPath).exists())
+        QDir(torrentsPath).mkdir(torrentsPath);
     connect(this, SIGNAL(finishedStage()), this, SLOT(doNextStage()), Qt::QueuedConnection);
+    connect(this, SIGNAL(setupConfig()), this, SLOT(makeConfig()), Qt::QueuedConnection);
 
     QPixmap t411(":/images/t411.png");
     t411label = new QLabel;
@@ -235,11 +244,12 @@ QGridLayout* Installer::nextStage(int incetape)
             }
 
             target += "/qBittorrent";
+            configPath = target + "/qBittorrent.ini";
 
             if (!readyToConfig)
             {
                 bool replaceConfig = true;
-                if (QFile::exists(target + "/qBittorrent.ini"))
+                if (QFile::exists(configPath))
                 {
                     if (!wannaReplace())
                     {
@@ -260,16 +270,17 @@ QGridLayout* Installer::nextStage(int incetape)
             {
                 if (!QDir(target).exists())
                     QDir().mkdir(target);
-                rename(target + "/qBittorrent.ini", target + "/qBittorrent.bak.ini");
+                rename(configPath, target + "/qBittorrent.bak.ini");
                 QUrl fileUrl;
                 fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/qBittorrent.ini");
                 fileDownload = new FileDownloader(fileUrl, this);
-                filePath = target + "/qBittorrent.ini";
+                filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
                 dbar->setValue(66);
             }
             else
             {
+                emit setupConfig();
                 dbar->setValue(100);
                 finished = true;
             }
@@ -285,12 +296,13 @@ QGridLayout* Installer::nextStage(int incetape)
             }
 
             target += "/uTorrent";
+            configPath = target + "/settings.dat";
 
             if (!readyToConfig)
             {
                 bool replaceConfig = true;
 
-                if (QFile::exists(target + "/settings.dat"))
+                if (QFile::exists(configPath))
                 {
                     if (!wannaReplace())
                     {
@@ -314,17 +326,18 @@ QGridLayout* Installer::nextStage(int incetape)
                     QDir().mkdir(target);
                 remove(target + "/resume.dat");
                 rename(target + "/resume.bak.dat", target + "/resume.dat");
-                rename(target + "/settings.dat", target + "/settings.bak.dat");
+                rename(configPath, target + "/settings.bak.dat");
                 rename(target + "/settings.dat.old", target + "/settings.bak.dat.old");
                 QUrl fileUrl;
                 fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/uTorrent.dat");
                 fileDownload = new FileDownloader(fileUrl, this);
-                filePath = target + "/settings.dat";
+                filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
                 dbar->setValue(66);
             }
             else
             {
+                emit setupConfig();
                 dbar->setValue(100);
                 finished = true;
             }
@@ -340,11 +353,12 @@ QGridLayout* Installer::nextStage(int incetape)
             }
 
             target += "/BitTorrent";
+            configPath = target + "/settings.dat";
 
             if (!readyToConfig)
             {
                 bool replaceConfig = true;
-                if (QFile::exists(target + "/settings.dat"))
+                if (QFile::exists(configPath))
                 {
                     if (!wannaReplace())
                     {
@@ -368,17 +382,18 @@ QGridLayout* Installer::nextStage(int incetape)
                     QDir().mkdir(target);
                 remove(target + "/resume.dat");
                 rename(target + "/resume.bak.dat", target + "/resume.dat");
-                rename(target + "/settings.dat", target + "/settings.bak.dat");
+                rename(configPath, target + "/settings.bak.dat");
                 rename(target + "/settings.dat.old", target + "/settings.bak.dat.old");
                 QUrl fileUrl;
                 fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/Bittorrent.dat");
                 fileDownload = new FileDownloader(fileUrl, this);
-                filePath = target + "/settings.dat";
+                filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
                 dbar->setValue(66);
             }
             else
             {
+                emit setupConfig();
                 dbar->setValue(100);
                 finished = true;
             }
@@ -394,11 +409,12 @@ QGridLayout* Installer::nextStage(int incetape)
             }
 
             target += "/Azureus";
+            configPath = target + "/azureus.config";
 
             if (!readyToConfig)
             {
                 bool replaceConfig = true;
-                if (QFile::exists(target + "/azureus.config"))
+                if (QFile::exists(configPath))
                 {
                     if (!wannaReplace())
                     {
@@ -419,16 +435,17 @@ QGridLayout* Installer::nextStage(int incetape)
             {
                 if (!QDir(target).exists())
                     QDir().mkdir(target);
-                rename(target + "/azureus.config", target + "/azureus.bak.config");
+                rename(configPath, target + "/azureus.bak.config");
                 QUrl fileUrl;
                 fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/Vuze.config");
                 fileDownload = new FileDownloader(fileUrl, this);
-                filePath = target + "/azureus.config";
+                filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
                 dbar->setValue(66);
             }
             else
             {
+                emit setupConfig();
                 dbar->setValue(100);
                 finished = true;
             }
@@ -444,11 +461,12 @@ QGridLayout* Installer::nextStage(int incetape)
             }
 
             target += "/deluge";
+            configPath = target + "/core.conf";
 
             if (!readyToConfig)
             {
                 bool replaceConfig = true;
-                if (QFile::exists(target + "/core.conf"))
+                if (QFile::exists(configPath))
                 {
                     if (!wannaReplace())
                     {
@@ -469,16 +487,17 @@ QGridLayout* Installer::nextStage(int incetape)
             {
                 if (!QDir(target).exists())
                     QDir().mkdir(target);
-                rename(target + "/core.conf", target + "/core.bak.conf");
+                rename(configPath, target + "/core.bak.conf");
                 QUrl fileUrl;
                 fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/Deluge.conf");
                 fileDownload = new FileDownloader(fileUrl, this);
-                filePath = target + "/core.conf";
+                filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
                 dbar->setValue(66);
             }
             else
             {
+                emit setupConfig();
                 dbar->setValue(100);
                 finished = true;
             }
@@ -544,6 +563,33 @@ void Installer::determineClient()
         QMessageBox::critical(parent, "Erreur", "Impossible de déterminer le client correspondant à votre système<br />Vous pouvez utiliser le checker en ligne :<br /><a href='http://irc.t411.io/checker/'>Cliquez ici</a>");
         qApp->quit();
     }
+}
+
+void Installer::makeConfig()
+{
+    QFile *configFile = new QFile(configPath);
+    if (!configFile->open(QIODevice::ReadOnly))
+    {
+        QMessageBox::critical(parent, "Erreur", "Impossible de lire le fichier de configuration<br />" + configPath + "<br />Erreur : " + configFile->errorString());
+        qApp->quit();
+    }
+
+    QTextStream configFlux(configFile);
+    QString configContent = configFlux.readAll();
+    configContent.replace("PORTHERE", QString::number(port));
+    configContent.replace("DOWNLOADSHERE", QDir::toNativeSeparators(downloadsPath));
+    configContent.replace("TORRENTSHERE", QDir::toNativeSeparators(torrentsPath));
+
+    configFile->close();
+
+    if (!configFile->open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+        QMessageBox::critical(parent, "Erreur", "Impossible d'écrire dans le fichier de configuration<br />" + configPath + "<br />Erreur : " + configFile->errorString());
+        qApp->quit();
+    }
+
+    configFlux << configContent;
+    configFile->close();
 }
 
 void Installer::doRefreshLayout(QGridLayout *newlayout)

@@ -30,6 +30,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QNetworkInterface>
+#include <QSettings>
 
 #include <windows.h>
 #include <Tlhelp32.h>
@@ -57,6 +58,7 @@ public slots:
 signals:
     void refreshLayout(QGridLayout*);
     void finishedStage();
+    void setupConfig();
 
 private slots:
     void doRefreshLayout(QGridLayout *newlayout);
@@ -67,6 +69,7 @@ private slots:
     void installConfig();
     void goToChoice();
     void clientChanged();
+    void makeConfig();
 
 private:
     bool wannaReplace();
@@ -75,8 +78,9 @@ private:
     void remove(QString argfile);
     void killProcessByName(const char *filename);
 
+    unsigned int port;
     int etape;
-    QString os, client, filePath;
+    QString os, client, filePath, configPath, downloadsPath, torrentsPath;
     MainWindow *parent;
     FileDownloader *fileDownload;
     QCheckBox *launchClient, *createLink;
