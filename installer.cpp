@@ -34,9 +34,6 @@ Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent)
     if (!QDir(torrentsPath).exists())
         QDir(torrentsPath).mkdir(torrentsPath);
     connect(this, SIGNAL(finishedStage()), this, SLOT(doNextStage()), Qt::QueuedConnection);
-    connect(this, SIGNAL(setupConfig()), this, SLOT(makeConfig()), Qt::QueuedConnection);
-
-    options = new Options(this);
 
     QPixmap t411(":/images/t411.png");
     t411label = new QLabel;
@@ -91,9 +88,6 @@ QGridLayout* Installer::nextStage(int incetape)
         chosedClient->setLayout(boxlayout);
         centerlayout->addWidget(chosedClient);
         centerlayout->addStretch();
-        QPushButton *advancedOptions = new QPushButton("Avancé");
-        connect(advancedOptions, SIGNAL(released()), this, SLOT(openOptions()));
-        centerlayout->addWidget(advancedOptions);
         centerlayout->setContentsMargins(0, 100, 0, 0);
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
         connect(utorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
@@ -120,7 +114,7 @@ QGridLayout* Installer::nextStage(int incetape)
         centerlayout->addWidget(text);
         centerlayout->setContentsMargins(0, 100, 0, 0);
         centerlayout->addStretch();
-        QPushButton *goToChoice = new QPushButton("Autres options");
+        QPushButton *goToChoice = new QPushButton("Autres clients");
         centerlayout->addWidget(goToChoice, Qt::AlignCenter);
         connect(goToChoice, SIGNAL(released()), this, SLOT(goToChoice()));
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
@@ -577,33 +571,6 @@ QString Installer::getOption(QString name)
         return QDir::toNativeSeparators(torrentsPath);
 }
 
-void Installer::makeConfig()
-{
-    QFile *configFile = new QFile(configPath);
-    if (!configFile->open(QIODevice::ReadOnly))
-    {
-        QMessageBox::critical(parent, "Erreur", "Impossible de lire le fichier de configuration<br />" + configPath + "<br />Erreur : " + configFile->errorString());
-        qApp->quit();
-    }
-
-    QTextStream configFlux(configFile);
-    QString configContent = configFlux.readAll();
-    configContent.replace("PORTHERE", QString::number(port));
-    configContent.replace("DOWNLOADSHERE", QDir::toNativeSeparators(downloadsPath));
-    configContent.replace("TORRENTSHERE", QDir::toNativeSeparators(torrentsPath));
-
-    configFile->close();
-
-    if (!configFile->open(QIODevice::WriteOnly | QIODevice::Truncate))
-    {
-        QMessageBox::critical(parent, "Erreur", "Impossible d'écrire dans le fichier de configuration<br />" + configPath + "<br />Erreur : " + configFile->errorString());
-        qApp->quit();
-    }
-
-    configFlux << configContent;
-    configFile->close();
-}
-
 void Installer::doRefreshLayout(QGridLayout *newlayout)
 {
     emit refreshLayout(newlayout);
@@ -636,11 +603,6 @@ void Installer::clientChanged()
         QMessageBox::critical(parent, "Erreur", "Imposible de mémoriser le client à installer");
         qApp->quit();
     }
-}
-
-void Installer::openOptions()
-{
-    options->open();
 }
 
 bool Installer::wannaReplace()

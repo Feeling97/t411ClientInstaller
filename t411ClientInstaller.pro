@@ -9,15 +9,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     installer.cpp \
     filedownloader.cpp \
-    aboutlabel.cpp \
-    options.cpp
+    aboutlabel.cpp
 
 HEADERS  += mainwindow.h \
     ui_mainwindow.h \
     installer.h \
     filedownloader.h \
-    aboutlabel.h \
-    options.h
+    aboutlabel.h
 
 RESOURCES += resources.qrc
 
