@@ -21,7 +21,9 @@ AboutLabel::AboutLabel()
     this->setObjectName("aboutlabel");
     this->setPixmap(logo);
     about = new QMessageBox(QMessageBox::Information, "À propos...", "<h2>À propos de t411 Client Installer</h2>"
-                                                                     "Par Feeling97, avec l'aide de Goof, TuxAnge, et tous ceux qui ont aidé à tester pendant le développement!",
+                                                                     "<p align=\"justify\">Par Feeling, avec l'aide de tous ceux qui ont aidé à tester<br />"
+                                                                     "Et des grands remerciements tout particulièrement à Goof, TuxAnge, et Nic0patch<br />"
+                                                                     "qui m'ont énormément aidé !</p>",
                                                                      QMessageBox::Ok);
 }
 
