@@ -39,10 +39,12 @@
 
 #include "mainwindow.h"
 #include "aboutlabel.h"
+#include "options.h"
 
 class MainWindow;
 class FileDownloader;
 class AboutLabel;
+class Options;
 class Installer : public QObject
 {
     Q_OBJECT
@@ -74,6 +76,8 @@ private slots:
     void installConfig();
     void goToChoice();
     void clientChanged();
+    void makeConfig();
+    void openOptions();
 
 private:
     bool wannaReplace();
@@ -91,6 +95,7 @@ private:
     QGroupBox *chosedClient;
     QLabel *t411label;
     AboutLabel *logolabel;
+    Options *options;
     QRadioButton *utorrentButton, *qbittorrentButton, *bittorrentButton, *vuzeButton, *delugeButton;
     bool isDownloaded, isInstalled, readyToInstall, readyToConfig, finished;
 };

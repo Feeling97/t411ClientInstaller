@@ -34,6 +34,9 @@ Installer::Installer(MainWindow *argparent, QString argos) : QObject(argparent)
     if (!QDir(torrentsPath).exists())
         QDir(torrentsPath).mkdir(torrentsPath);
     connect(this, SIGNAL(finishedStage()), this, SLOT(doNextStage()), Qt::QueuedConnection);
+    connect(this, SIGNAL(setupConfig()), this, SLOT(makeConfig()), Qt::QueuedConnection);
+
+    options = new Options(this);
 
     QPixmap t411(":/images/t411.png");
     t411label = new QLabel;
@@ -88,6 +91,9 @@ QGridLayout* Installer::nextStage(int incetape)
         chosedClient->setLayout(boxlayout);
         centerlayout->addWidget(chosedClient);
         centerlayout->addStretch();
+        QPushButton *advancedOptions = new QPushButton("Avancé");
+        connect(advancedOptions, SIGNAL(released()), this, SLOT(openOptions()));
+        centerlayout->addWidget(advancedOptions);
         centerlayout->setContentsMargins(0, 100, 0, 0);
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
         connect(utorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
@@ -114,7 +120,7 @@ QGridLayout* Installer::nextStage(int incetape)
         centerlayout->addWidget(text);
         centerlayout->setContentsMargins(0, 100, 0, 0);
         centerlayout->addStretch();
-        QPushButton *goToChoice = new QPushButton("Autres clients");
+        QPushButton *goToChoice = new QPushButton("Autres options");
         centerlayout->addWidget(goToChoice, Qt::AlignCenter);
         connect(goToChoice, SIGNAL(released()), this, SLOT(goToChoice()));
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
@@ -275,7 +281,7 @@ QGridLayout* Installer::nextStage(int incetape)
                     QDir().mkdir(target);
                 rename(configPath, target + "/qBittorrent.bak.ini");
                 QUrl fileUrl;
-                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/qBittorrent.ini");
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/dynConfigs/qBittorrent.ini");
                 fileDownload = new FileDownloader(fileUrl, this);
                 filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
@@ -332,7 +338,7 @@ QGridLayout* Installer::nextStage(int incetape)
                 rename(configPath, target + "/settings.bak.dat");
                 rename(target + "/settings.dat.old", target + "/settings.bak.dat.old");
                 QUrl fileUrl;
-                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/uTorrent.dat");
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/dynConfigs/uTorrent.dat");
                 fileDownload = new FileDownloader(fileUrl, this);
                 filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
@@ -388,7 +394,7 @@ QGridLayout* Installer::nextStage(int incetape)
                 rename(configPath, target + "/settings.bak.dat");
                 rename(target + "/settings.dat.old", target + "/settings.bak.dat.old");
                 QUrl fileUrl;
-                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/Bittorrent.dat");
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/dynConfigs/Bittorrent.dat");
                 fileDownload = new FileDownloader(fileUrl, this);
                 filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
@@ -440,7 +446,7 @@ QGridLayout* Installer::nextStage(int incetape)
                     QDir().mkdir(target);
                 rename(configPath, target + "/azureus.bak.config");
                 QUrl fileUrl;
-                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/Vuze.config");
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/dynConfigs/Vuze.config");
                 fileDownload = new FileDownloader(fileUrl, this);
                 filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
@@ -492,7 +498,7 @@ QGridLayout* Installer::nextStage(int incetape)
                     QDir().mkdir(target);
                 rename(configPath, target + "/core.bak.conf");
                 QUrl fileUrl;
-                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/configs/Deluge.conf");
+                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/dynConfigs/Deluge.conf");
                 fileDownload = new FileDownloader(fileUrl, this);
                 filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
@@ -571,6 +577,47 @@ QString Installer::getOption(QString name)
         return QDir::toNativeSeparators(torrentsPath);
 }
 
+void Installer::makeConfig()
+{
+    QFile *configFile = new QFile(configPath);
+    if (!configFile->open(QIODevice::ReadOnly))
+    {
+        QMessageBox::critical(parent, "Erreur", "Impossible de lire le fichier de configuration<br />" + configPath + "<br />Erreur : " + configFile->errorString());
+        qApp->quit();
+    }
+
+    QByteArray configBinary = configFile->readAll();
+    QByteArray dPath;
+    QByteArray tPath;
+    if (client == "µTorrent 2.2.1" || client == "Bittorrent")
+    {
+        dPath.append(downloadsPath.length() + ":" + QDir::toNativeSeparators(downloadsPath));
+        tPath.append(torrentsPath.length() + ":" + QDir::toNativeSeparators(torrentsPath));
+        configBinary.replace(QByteArray::number(50500), QByteArray::number(port));
+        configBinary.replace("13:DOWNLOADSHERE", dPath);
+        configBinary.replace("12:TORRENTSHERE", tPath);
+    }
+    else
+    {
+        dPath.append(QDir::toNativeSeparators(downloadsPath));
+        tPath.append(QDir::toNativeSeparators(torrentsPath));
+        configBinary.replace("PORTHERE", QByteArray::number(port));
+        configBinary.replace("DOWNLOADSHERE", dPath);
+        configBinary.replace("TORRENTSHERE", tPath);
+    }
+
+    configFile->close();
+
+    if (!configFile->open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+        QMessageBox::critical(parent, "Erreur", "Impossible d'écrire dans le fichier de configuration<br />" + configPath + "<br />Erreur : " + configFile->errorString());
+        qApp->quit();
+    }
+
+    configFile->write(configBinary);
+    configFile->close();
+}
+
 void Installer::doRefreshLayout(QGridLayout *newlayout)
 {
     emit refreshLayout(newlayout);
@@ -603,6 +650,11 @@ void Installer::clientChanged()
         QMessageBox::critical(parent, "Erreur", "Imposible de mémoriser le client à installer");
         qApp->quit();
     }
+}
+
+void Installer::openOptions()
+{
+    options->open();
 }
 
 bool Installer::wannaReplace()
