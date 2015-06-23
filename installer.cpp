@@ -69,15 +69,12 @@ QGridLayout* Installer::nextStage(int incetape)
         chosedClient = new QGroupBox("Choisissez le client que vous voulez installer :", parent);
         utorrentButton = new QRadioButton("µTorrent 2.2.1", chosedClient);
         qbittorrentButton = new QRadioButton("qBittorrent", chosedClient);
-        bittorrentButton = new QRadioButton("Bittorrent", chosedClient);
         vuzeButton = new QRadioButton("Vuze", chosedClient);
         delugeButton = new QRadioButton("Deluge", chosedClient);
         if (client == "µTorrent 2.2.1")
             utorrentButton->setChecked(true);
         else if (client == "qBittorrent")
             qbittorrentButton->setChecked(true);
-        else if (client == "Bittorrent")
-            bittorrentButton->setChecked(true);
         else if (client == "Vuze")
             vuzeButton->setChecked(true);
         else if (client == "Deluge")
@@ -85,7 +82,6 @@ QGridLayout* Installer::nextStage(int incetape)
         if (os != "Windows 8" && os != "Windows 8.1")
            boxlayout->addWidget(utorrentButton, Qt::AlignVCenter);
         boxlayout->addWidget(qbittorrentButton, Qt::AlignVCenter);
-        boxlayout->addWidget(bittorrentButton, Qt::AlignVCenter);
         boxlayout->addWidget(vuzeButton, Qt::AlignVCenter);
         boxlayout->addWidget(delugeButton, Qt::AlignVCenter);
         chosedClient->setLayout(boxlayout);
@@ -98,7 +94,6 @@ QGridLayout* Installer::nextStage(int incetape)
         layout->addLayout(centerlayout, 0, 0, 0, 0, Qt::AlignVCenter);
         connect(utorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
         connect(qbittorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
-        connect(bittorrentButton, SIGNAL(released()), this, SLOT(clientChanged()));
         connect(vuzeButton, SIGNAL(released()), this, SLOT(clientChanged()));
         connect(delugeButton, SIGNAL(released()), this, SLOT(clientChanged()));
     }
@@ -139,8 +134,6 @@ QGridLayout* Installer::nextStage(int incetape)
                 fileUrl.setUrl("http://88.198.168.163/logiciels/qbittorrent_3.1.11_setup.exe");
             else if (client == "µTorrent 2.2.1")
                 fileUrl.setUrl("http://88.198.168.163/logiciels/2-2-1-build-25130-utorrent.exe");
-            else if (client == "Bittorrent")
-                fileUrl.setUrl("http://88.198.168.163/logiciels/bittorrent-6-4.exe");
             else if (client == "Vuze")
                 fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/installs/VuzeInstaller.exe");
             else if (client == "Deluge")
@@ -175,7 +168,7 @@ QGridLayout* Installer::nextStage(int incetape)
 
         if (!isInstalled)
         {
-            if (client == "qBittorrent" || client == "Bittorrent" || client == "Deluge")
+            if (client == "qBittorrent" || client == "Deluge")
             {
                 killProcessByName(QString(client + ".exe").toLower().toUtf8().data());
                 QProcess *setup = new QProcess(this);
@@ -339,62 +332,6 @@ QGridLayout* Installer::nextStage(int incetape)
                 rename(target + "/settings.dat.old", target + "/settings.bak.dat.old");
                 QUrl fileUrl;
                 fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/dynConfigs/uTorrent.dat");
-                fileDownload = new FileDownloader(fileUrl, this);
-                filePath = configPath;
-                connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
-                dbar->setValue(66);
-            }
-            else
-            {
-                emit setupConfig();
-                dbar->setValue(100);
-                finished = true;
-            }
-        }
-        else if (client == "Bittorrent")
-        {
-            QString target = QProcessEnvironment::systemEnvironment().value("AppData");
-
-            if (target.isEmpty())
-            {
-                QMessageBox::critical(parent, "Erreur", "Impossible d'installer " + client + " pour " + os + "<br />Impossible d'accéder à la variable d'environnement %AppData%");
-                qApp->quit();
-            }
-
-            target += "/BitTorrent";
-            configPath = target + "/settings.dat";
-
-            if (!readyToConfig)
-            {
-                bool replaceConfig = true;
-                if (QFile::exists(configPath))
-                {
-                    if (!wannaReplace())
-                    {
-                        replaceConfig = false;
-                        dbar->setValue(100);
-                        finished = true;
-                    }
-                }
-
-                if (replaceConfig)
-                {
-                    copy(target + "/resume.dat", target + "/resume.bak.dat");
-                    killProcessByName("bittorrent.exe");
-                    QTimer::singleShot(2000, this, SLOT(installConfig()));
-                    dbar->setValue(66);
-                }
-            }
-            else if (!isDownloaded)
-            {
-                if (!QDir(target).exists())
-                    QDir().mkdir(target);
-                remove(target + "/resume.dat");
-                rename(target + "/resume.bak.dat", target + "/resume.dat");
-                rename(configPath, target + "/settings.bak.dat");
-                rename(target + "/settings.dat.old", target + "/settings.bak.dat.old");
-                QUrl fileUrl;
-                fileUrl.setUrl("http://tuxange.org/t411ClientInstaller/dynConfigs/Bittorrent.dat");
                 fileDownload = new FileDownloader(fileUrl, this);
                 filePath = configPath;
                 connect(fileDownload, SIGNAL(downloaded()), this, SLOT(saveDownloadedFile()));
@@ -589,7 +526,7 @@ void Installer::makeConfig()
     QByteArray configBinary = configFile->readAll();
     QByteArray dPath;
     QByteArray tPath;
-    if (client == "µTorrent 2.2.1" || client == "Bittorrent")
+    if (client == "µTorrent 2.2.1")
     {
         dPath.append(downloadsPath.length() + ":" + QDir::toNativeSeparators(downloadsPath));
         tPath.append(torrentsPath.length() + ":" + QDir::toNativeSeparators(torrentsPath));
@@ -639,8 +576,6 @@ void Installer::clientChanged()
         client = "µTorrent 2.2.1";
     else if (qbittorrentButton->isChecked())
         client = "qBittorrent";
-    else if (bittorrentButton->isChecked())
-        client = "Bittorrent";
     else if (vuzeButton->isChecked())
         client = "Vuze";
     else if (delugeButton->isChecked())
@@ -760,8 +695,6 @@ void Installer::pressedFinish()
             QFile::link(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/uTorrent/uTorrent.exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/µTorrent.lnk"));
         else if (client == "qBittorrent")
             QFile::link(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/qBittorrent/qBittorrent.exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/" + client + ".lnk"));
-        else if (client == "Bittorrent")
-            QFile::link(QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("ProgramFiles") + "/BitTorrent/bittorrent.exe"), QDir::toNativeSeparators(QProcessEnvironment::systemEnvironment().value("UserProfile") + "/Desktop/" + client + ".lnk"));
     }
 
     qApp->quit();

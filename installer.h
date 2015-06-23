@@ -96,7 +96,7 @@ private:
     QLabel *t411label;
     AboutLabel *logolabel;
     Options *options;
-    QRadioButton *utorrentButton, *qbittorrentButton, *bittorrentButton, *vuzeButton, *delugeButton;
+    QRadioButton *utorrentButton, *qbittorrentButton, *vuzeButton, *delugeButton;
     bool isDownloaded, isInstalled, readyToInstall, readyToConfig, finished;
 };
 
