@@ -79,8 +79,10 @@ QGridLayout* Installer::nextStage(int incetape)
             vuzeButton->setChecked(true);
         else if (client == "Deluge")
             delugeButton->setChecked(true);
-        if (os != "Windows 8" && os != "Windows 8.1")
+        if (!(os == "Windows 8" || os == "Windows 8.1" || os == "Windows"))
            boxlayout->addWidget(utorrentButton, Qt::AlignVCenter);
+        else
+            delete utorrentButton;
         boxlayout->addWidget(qbittorrentButton, Qt::AlignVCenter);
         boxlayout->addWidget(vuzeButton, Qt::AlignVCenter);
         boxlayout->addWidget(delugeButton, Qt::AlignVCenter);
