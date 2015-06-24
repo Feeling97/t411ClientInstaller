@@ -2,8 +2,7 @@
 Dépôt du projet t411ClientInstaller pendant le développement
 
 ## Infos pratiques
-Si vous tentez de le compiler vous-même vous vous rendrez compte que l'exécutable final fait 8.31Mo alors que tous ceux que j'ai mis en téléchargement font 3.41Mo
-Mais si vous le compressez avec UPX vous vous rendrez compte que l'exécutable fait 3.41Mo!
+Ne vous étonnez pas de la taille finale de l'exécutable, j'utilise une série d'optimisations et un compilateur reglé pour diminuer la taille du fichier final
 
 ## Compilation manuelle
 ### Pré-requis:
