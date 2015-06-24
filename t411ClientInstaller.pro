@@ -5,6 +5,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = t411ClientInstaller
 TEMPLATE = app
 
+QMAKE_CFLAGS_RELEASE += -Os -mtune=generic -fomit-frame-pointer -fno-rtti -fno-exceptions -fno-keep-inline-dllexport -m32
+QMAKE_CXXFLAGS_RELEASE += $$QMAKE_CFLAGS_RELEASE
+QMAKE_LFLAGS_RELEASE += -s
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     installer.cpp \
