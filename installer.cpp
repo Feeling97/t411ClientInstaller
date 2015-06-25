@@ -528,7 +528,7 @@ void Installer::makeConfig()
     QByteArray configBinary = configFile->readAll();
     QByteArray dPath;
     QByteArray tPath;
-    if (client == "µTorrent 2.2.1")
+    if (client == "µTorrent 2.2.1" || client == "Vuze")
     {
         dPath.append(downloadsPath.length() + ":" + QDir::toNativeSeparators(downloadsPath));
         tPath.append(torrentsPath.length() + ":" + QDir::toNativeSeparators(torrentsPath));
